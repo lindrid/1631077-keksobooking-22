@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг»
 
 * Студент: [Дмитрий Федоров](https://up.htmlacademy.ru/javascript/22/user/1631077).
-* Наставник: Виталий Комолаев.
+* Наставник: [Виталий :panda_face: Комолаев](https://up.htmlacademy.ru/javascript/22/user/1274335).
 
 ---
 
