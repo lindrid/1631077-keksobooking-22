@@ -32,3 +32,6 @@ const getRandomFloat = function (min, max, precision) {
   return (Math.round(Math.random() * Math.pow(10, precision)) /
     Math.pow(10, precision) * (max - min) + min).toFixed(precision);
 }
+
+getRandomInt(1, 10);
+getRandomFloat(1.1, 1.2, 1);
