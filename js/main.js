@@ -53,7 +53,7 @@ const getRandomFloat = function (min, max, precision) {
       return number;
     }
     
-    string = string.slice(0, string.indexOf('.') + precision + 1);
+    string = string.slice(0, dotIndex + precision + 1);
 
     return parseFloat(string);
   }
