@@ -18,6 +18,7 @@ const getRandomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
 }
 
+// precision - это количество знаков после запятой
 const getRandomFloat = function (min, max, precision) {
   if (isWrongRange(min, max) || precision < 0) {
     return NaN;
