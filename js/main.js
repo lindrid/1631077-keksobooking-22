@@ -25,38 +25,38 @@ const getRandomFloat = function (min, max, precision) {
   }
 
   if (min === max) {
-    let string = max.toString();
-    let dotIndex = string.indexOf('.');
+    let maxStr = max.toString();
+    let dotIndex = maxStr.indexOf('.');
     
     if (dotIndex === -1) {
       return max;
     }
 
-    return parseFloat(string.slice(0, dotIndex + precision + 1));
+    return parseFloat(maxStr.slice(0, dotIndex + precision + 1));
   }
 
-  const getPrecision = function (number) {
-    let string = number.toString();
-    let dotIndex = string.indexOf('.');
+  const getPrecision = function (float) {
+    let floatStr = float.toString();
+    let dotIndex = floatStr.indexOf('.');
 
     if (dotIndex === -1) {
       return 0;
     }
   
-    return string.slice(dotIndex + 1).length;
+    return floatStr.slice(dotIndex + 1).length;
   }
 
-  const getFloatWithPrecision = function (number, precision) {
-    let string = number.toString();
-    let dotIndex = string.indexOf('.');
+  const getFloatWithPrecision = function (float, precision) {
+    let floatStr = float.toString();
+    let dotIndex = floatStr.indexOf('.');
     
     if (dotIndex === -1) {
-      return number;
+      return float;
     }
     
-    string = string.slice(0, dotIndex + precision + 1);
+    floatStr = floatStr.slice(0, dotIndex + precision + 1);
 
-    return parseFloat(string);
+    return parseFloat(floatStr);
   }
 
   let maxPrecision = Math.max(getPrecision(min), getPrecision(max), precision);
