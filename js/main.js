@@ -29,9 +29,9 @@ const getRandomFloat = function (min, max, precision) {
     return max.toFixed(precision);
   }
 
-  return (Math.round(Math.random() * Math.pow(10, precision)) /
-    Math.pow(10, precision) * (max - min) + min).toFixed(precision);
+  return parseFloat((Math.round(Math.random() * Math.pow(10, precision)) /
+    Math.pow(10, precision) * (max - min) + min).toFixed(precision));
 }
 
 getRandomInt(1, 10);
-getRandomFloat(1.1, 1.2, 1);
+getRandomFloat(0, 0.1, 2);
