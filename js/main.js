@@ -18,20 +18,67 @@ const getRandomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min; //Максимум и минимум включаются
 }
 
-/**
- * https://stackoverflow.com/a/42356278
- */
 const getRandomFloat = function (min, max, precision) {
-  if (isWrongRange(min, max)) {
+  if (isWrongRange(min, max) || precision < 0) {
     return NaN;
   }
+
   if (min === max) {
-    return max.toFixed(precision);
+    let string = max.toString();
+    let dotIndex = string.indexOf('.');
+    
+    if (dotIndex === -1) {
+      return max;
+    }
+
+    return parseFloat(string.slice(0, dotIndex + precision + 1));
   }
 
-  return parseFloat((Math.round(Math.random() * Math.pow(10, precision)) /
-    Math.pow(10, precision) * (max - min) + min).toFixed(precision));
+  const getPrecision = function (number) {
+    let string = number.toString();
+    let dotIndex = string.indexOf('.');
+
+    if (dotIndex === -1) {
+      return 0;
+    }
+  
+    return string.slice(dotIndex + 1).length;
+  }
+
+  const getFloatWithPrecision = function (number, precision) {
+    let string = number.toString();
+    let dotIndex = string.indexOf('.');
+    
+    if (dotIndex === -1) {
+      return number;
+    }
+    
+    string = string.slice(0, string.indexOf('.') + precision + 1);
+
+    return parseFloat(string);
+  }
+
+  let maxPrecision = Math.max(getPrecision(min), getPrecision(max), precision);
+  let multiplier = Math.pow(10, maxPrecision);
+  let random = getRandomInt(min * multiplier, max * multiplier);
+  let result = random / multiplier;
+
+  if (precision < maxPrecision) {
+    return getFloatWithPrecision(result, precision);
+  }
+
+  return result;
 }
 
+// примеры использования
+
 getRandomInt(1, 10);
-getRandomFloat(0, 0.1, 2);
+
+getRandomFloat(1, 1 , 0); //1
+getRandomFloat(1, 1.5 , 0); //1
+getRandomFloat(0.1250, 0.1250, 2); //0.12
+getRandomFloat(0.1, 0.1, 4); //0.1
+getRandomFloat(1.1, 1.2 , 3); //например, 1.179
+getRandomFloat(1.125, 1.2 , 2); //например, 1.16
+getRandomFloat(1.1, 10.12345 , 1); //например, 3.8
+getRandomFloat(1.555, 6.999 , 3); //например, 2.116
