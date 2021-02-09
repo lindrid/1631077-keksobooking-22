@@ -224,4 +224,4 @@ const generateObjects = function (quantity) {
   })
 };
 
-console.log(generateObjects(GENERATED_OBJECTS_NUMBER));
+generateObjects(GENERATED_OBJECTS_NUMBER);
