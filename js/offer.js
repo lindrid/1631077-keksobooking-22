@@ -9,7 +9,7 @@ const getRoomsString = function (rooms) {
 }
 
 const createElements = function (objects) {
-  const offerElements = objects.map((object, index) => {
+  const offerElements = objects.map((object) => {
     const {author, offer} = object;
     const cardTemplate = document.querySelector('#card').content;
     const elementTemplate = cardTemplate.querySelector('article.popup');

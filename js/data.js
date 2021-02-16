@@ -114,7 +114,7 @@ const generateOffer = function (location) {
   }
 
   const photosNumber = getRandomInt(1, 10);
-  const photos = new Array(photosNumber).fill(0).map((item) => {
+  const photos = new Array(photosNumber).fill(0).map(() => {
     const i = getRandomInt(1, 3);
     return `http://o0.github.io/assets/images/tokyo/hotel${i}.jpg`
   });
