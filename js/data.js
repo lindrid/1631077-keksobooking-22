@@ -54,7 +54,7 @@ const generateOffer = function (location) {
       wordRooms = 'комнатой';
     }
     
-    let title = `${buildingName} за ${price}$/ночь в удобном районе,` +
+    let title = `${buildingName} за ${price} ₽/ночь в удобном районе,` +
       ` с ${rooms} ${wordRooms}.`;
     
     do {
@@ -107,7 +107,7 @@ const generateOffer = function (location) {
       already = 'аж';
     }
 
-    return `Забронируйте ${ourStr} ${ourType} за ${price}$ на ночь! ` +
+    return `Забронируйте ${ourStr} ${ourType} за ${price}₽ на ночь! ` +
       `${getWithCapital(hisStr)} локация имеет координаты ${location.x}, ${location.y}. ` +
       `Количество комнат Вас ${doWhat}, их ${already} ${rooms}шт. ` +
       `Забронируйте прямо сейчас и получите ${gift} в подарок!`;
