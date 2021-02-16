@@ -8,8 +8,9 @@ const getRoomsString = function (rooms) {
   return rooms + ' ' + roomsStr;
 }
 
-const createElements = function (offers) {
-  const offerElements = offers.map((offer, index) => {
+const createElements = function (objects) {
+  const offerElements = objects.map((object, index) => {
+    const {author, offer} = object;
     const cardTemplate = document.querySelector('#card').content;
     const elementTemplate = cardTemplate.querySelector('article.popup');
     const offerElement = elementTemplate.cloneNode(true);
@@ -45,6 +46,9 @@ const createElements = function (offers) {
       return accumulator + `<img src="${photo}" class="popup__photo" width="45" height="40" ` +
         'alt="Фотография жилья">\n';
     }, '');
+
+    const avatar = offerElement.querySelector('.popup__avatar');
+    avatar.src = author.avatar;
 
     return offerElement;
   });
