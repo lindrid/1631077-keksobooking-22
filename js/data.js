@@ -20,16 +20,20 @@ const generateLocation = function () {
 };
 
 const housingsAttributes = {
-  palace:   {name: 'дворец',    roomsRange: [10, 20],  coefficientRange: [10, 15]}, 
-  flat:     {name: 'квартира',  roomsRange: [1, 5],    coefficientRange: [10, 15]}, 
-  house:    {name: 'дом',       roomsRange: [5, 10],   coefficientRange: [10, 15]},
-  bungalow: {name: 'бунгало',   roomsRange: [1, 3],    coefficientRange: [0, 5]},
+  palace:   {name: 'дворец',    roomsRange: [10, 20],  coefficientRange: [10, 15], minPrice: 10000}, 
+  flat:     {name: 'квартира',  roomsRange: [1, 5],    coefficientRange: [10, 15], minPrice: 1000}, 
+  house:    {name: 'дом',       roomsRange: [5, 10],   coefficientRange: [10, 15], minPrice: 5000},
+  bungalow: {name: 'бунгало',   roomsRange: [1, 3],    coefficientRange: [0, 5],   minPrice: 0},
 };
 
 const getWithCapital = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
 const getHousingName = function (housing) {
   return getWithCapital(housingsAttributes[housing].name);
+}
+
+const getHousingMinPrice = function (housing) {
+  return housingsAttributes[housing].minPrice;
 }
 
 const generateOffer = function (location) {
@@ -145,4 +149,4 @@ const generateObjects = function (quantity) {
   })
 };
 
-export {generateObjects, getHousingName};
+export {generateObjects, getHousingName, getHousingMinPrice};
