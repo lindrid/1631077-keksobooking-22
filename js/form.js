@@ -8,7 +8,8 @@ const timeoutElement = document.querySelector('#timeout');
 const addChangeListeners = function () {
   typeElement.addEventListener('change', (evt) => {
     const minPrice = getHousingMinPrice(evt.target.value);
-    priceElement.value = priceElement.placeholder = minPrice;
+    priceElement.min = minPrice;
+    priceElement.placeholder = minPrice;
   });
 
   timeinElement.addEventListener('change', (evt) => {
