@@ -1,4 +1,4 @@
-import {getBuildingName} from './data.js';
+import {getHousingName} from './data.js';
 
 const getRoomsString = function (rooms) {
   let roomsStr = (rooms === 1)? 'комната' : 'комнат';
@@ -34,7 +34,7 @@ const createElements = function (objects) {
     setTextContent('.popup__title', offer.title);
     setTextContent('.popup__text--address', offer.address);
     setTextContent('.popup__text--price', offer.price + ' ₽/ночь');
-    setTextContent('.popup__type', getBuildingName(offer.type));
+    setTextContent('.popup__type', getHousingName(offer.type));
     setTextContent('.popup__text--capacity', `${getRoomsString(offer.rooms)} для ` +
       `${getGuestsString(offer.guests)}`);
     setTextContent('.popup__text--time', `Заезд после ${offer.checkIn}, выезд ` +

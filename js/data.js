@@ -19,31 +19,35 @@ const generateLocation = function () {
   }
 };
 
-const buildingsAttributes = {
-  palace:   {name: 'дворец',    roomsRange: [10, 20],  coefficientRange: [10, 15]}, 
-  flat:     {name: 'квартира',  roomsRange: [1, 5],    coefficientRange: [10, 15]}, 
-  house:    {name: 'дом',       roomsRange: [5, 10],   coefficientRange: [10, 15]},
-  bungalow: {name: 'бунгало',   roomsRange: [1, 3],    coefficientRange: [0, 5]},
+const housingsAttributes = {
+  palace:   {name: 'дворец',    roomsRange: [10, 20],  coefficientRange: [10, 15], minPrice: 10000}, 
+  flat:     {name: 'квартира',  roomsRange: [1, 5],    coefficientRange: [10, 15], minPrice: 1000}, 
+  house:    {name: 'дом',       roomsRange: [5, 10],   coefficientRange: [10, 15], minPrice: 5000},
+  bungalow: {name: 'бунгало',   roomsRange: [1, 3],    coefficientRange: [0, 5],   minPrice: 0},
 };
 
 const getWithCapital = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
-const getBuildingName = function (building) {
-  return getWithCapital(buildingsAttributes[building].name);
+const getHousingName = function (housing) {
+  return getWithCapital(housingsAttributes[housing].name);
+}
+
+const getHousingMinPrice = function (housing) {
+  return housingsAttributes[housing].minPrice;
 }
 
 const generateOffer = function (location) {
-  const buildings = ['palace', 'flat', 'house', 'bungalow'];
+  const housings = ['palace', 'flat', 'house', 'bungalow'];
   const times = ['12:00', '13:00', '14:00'];
   const features = ['elevator', 'wifi', 'dishwasher', 'parking', 
     'washer', 'conditioner'];
   
-  const building = buildings[getRandomInt(0, 3)];
-  const buildingAttributes = buildingsAttributes[building];
-  const buildingName = getBuildingName(building);
-  const [roomsMin, roomsMax] = buildingAttributes.roomsRange;
+  const housing = housings[getRandomInt(0, 3)];
+  const housingAttributes = housingsAttributes[housing];
+  const housingName = getHousingName(housing);
+  const [roomsMin, roomsMax] = housingAttributes.roomsRange;
   const rooms = getRandomInt(roomsMin, roomsMax);
-  const [minCoefficient, maxCoefficient] = buildingAttributes.coefficientRange;
+  const [minCoefficient, maxCoefficient] = housingAttributes.coefficientRange;
   const coefficient = getRandomInt(minCoefficient, maxCoefficient);
   const price = coefficient * rooms * 100;
   const guests = rooms * 5;
@@ -54,7 +58,7 @@ const generateOffer = function (location) {
       wordRooms = 'комнатой';
     }
     
-    let title = `${buildingName} за ${price} ₽/ночь в удобном районе,` +
+    let title = `${housingName} за ${price} ₽/ночь в удобном районе,` +
       ` с ${rooms} ${wordRooms}.`;
     
     do {
@@ -71,19 +75,19 @@ const generateOffer = function (location) {
   const checkTime = times[getRandomInt(0, 2)];
 
   let slicedFeatures = features.slice(getRandomInt(1, 5));
-  if (building === 'flat') {
+  if (housing === 'flat') {
     slicedFeatures = features.slice(getRandomInt(0, 5));
   }
 
   const getDescription = function () {
     let ourStr = 'наш'; 
     let hisStr = 'его';
-    let ourType = buildingName;
+    let ourType = housingName;
     let doWhat; 
     let already = '';
     let gift;
 
-    if (building === 'flat') {
+    if (housing === 'flat') {
       ourStr = 'нашу';
       ourType = 'квартиру';
       hisStr = 'её';
@@ -123,7 +127,7 @@ const generateOffer = function (location) {
     title: getTitle(OFFER_TITLE_MIN_LENGTH, OFFER_TITLE_MAX_LENGTH) ,
     address: location.x + ', ' + location.y,
     price: price,
-    type: building,
+    type: housing,
     rooms: rooms,
     guests: guests,
     checkIn: checkTime,
@@ -145,4 +149,4 @@ const generateObjects = function (quantity) {
   })
 };
 
-export {generateObjects, getBuildingName};
+export {generateObjects, getHousingName, getHousingMinPrice};
