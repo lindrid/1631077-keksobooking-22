@@ -1,11 +1,11 @@
 import {getHousingMinPrice} from './data.js'
 
-const typeElement = document.querySelector('#type');
-const priceElement = document.querySelector('#price');
-const timeinElement = document.querySelector('#timein');
-const timeoutElement = document.querySelector('#timeout');
-
 const addChangeListeners = function () {
+  const typeElement = document.querySelector('#type');
+  const priceElement = document.querySelector('#price');
+  const timeinElement = document.querySelector('#timein');
+  const timeoutElement = document.querySelector('#timeout');
+
   typeElement.addEventListener('change', (evt) => {
     const minPrice = getHousingMinPrice(evt.target.value);
     priceElement.min = minPrice;
@@ -21,4 +21,20 @@ const addChangeListeners = function () {
   });
 }
 
-export {addChangeListeners};
+const setToInactiveState = function () {
+  const formElement = document.querySelector('.ad-form');
+  formElement.classList.add('.ad-form--disabled');
+
+  const fieldsets = formElement.querySelectorAll('fieldset');
+  fieldsets.forEach((fieldset) => {
+    fieldset.disabled = true;
+  })
+
+  const filtersFormElement = document.querySelector('.map__filters');
+  const filters = filtersFormElement.children;
+  for (let filter of filters) {
+    filter.disabled = true;
+  }
+}
+
+export {addChangeListeners, setToInactiveState};
