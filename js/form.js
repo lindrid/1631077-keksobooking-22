@@ -21,20 +21,31 @@ const addChangeListeners = function () {
   });
 }
 
-const setToInactiveState = function () {
+const setToState = function (state) {
   const formElement = document.querySelector('.ad-form');
-  formElement.classList.add('.ad-form--disabled');
-
   const fieldsets = formElement.querySelectorAll('fieldset');
+  const filtersFormElement = document.querySelector('.map__filters');
+
+  if (state === 'inactive') {
+    formElement.classList.add('.ad-form--disabled');
+  }
+  if (state === 'active') {
+    formElement.classList.remove('.ad-form--disabled');
+  }
+
   fieldsets.forEach((fieldset) => {
-    fieldset.disabled = true;
+    fieldset.disabled = (state === 'inactive')? true : false;
   })
 
-  const filtersFormElement = document.querySelector('.map__filters');
   const filters = filtersFormElement.children;
   for (let filter of filters) {
-    filter.disabled = true;
+    filter.disabled = (state === 'inactive')? true : false;
   }
 }
 
-export {addChangeListeners, setToInactiveState};
+const setAddress = function (latitude, longitude) {
+  const addressElement = document.querySelector('#address');
+  addressElement.value = `${latitude}, ${longitude}`;
+}
+
+export {addChangeListeners, setToState, setAddress};
