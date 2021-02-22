@@ -42,8 +42,14 @@ const createElements = function (objects) {
     setTextContent('.popup__description', offer.description);
     setTextContent('.popup__avatar', author.avatar);
    
-    setInnerHTML('.popup__features', offer.features, 
-      '<li class="popup__feature popup__feature--', '"></li>\n');
+    if (offer.features.length > 0) {
+      setInnerHTML('.popup__features', offer.features, 
+        '<li class="popup__feature popup__feature--', '"></li>\n');
+    }
+    else {
+      const featuresElement = offerElement.querySelector('.popup__features');
+      featuresElement.classList.add('hidden');
+    }
     setInnerHTML('.popup__photos', offer.photos, '<img src="',
       '" class="popup__photo" width="45" height="40" alt="Фотография жилья">\n');
 
