@@ -74,11 +74,15 @@ const generateOffer = function (location) {
 
   const checkTime = times[getRandomInt(0, 2)];
 
-  let slicedFeatures = features.slice(getRandomInt(1, 5));
-  if (housing === 'flat') {
-    slicedFeatures = features.slice(getRandomInt(0, 5));
+  let randomInt;
+  if (housing === 'palace' || housing === 'flat') {
+    randomInt = getRandomInt(0, 6);
   }
-
+  else {
+    randomInt = getRandomInt(1, 6);
+  }
+  let randomFeatures = features.slice(randomInt);
+ 
   const getDescription = function () {
     let ourStr = 'наш'; 
     let hisStr = 'его';
@@ -132,7 +136,7 @@ const generateOffer = function (location) {
     guests: guests,
     checkIn: checkTime,
     checkOut: checkTime,
-    features: slicedFeatures,
+    features: randomFeatures,
     description: getDescription(),
     photos: photos,
   };
