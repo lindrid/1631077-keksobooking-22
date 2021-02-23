@@ -11,7 +11,7 @@ const GENERATED_OBJECTS_NUMBER = 10;
 const MAP_SCALE = 12;
 const Tokyo = {
   LATITUDE: 35.65283,
-  LONGITUDE: 139.83948
+  LONGITUDE: 139.83948,
 }
 
 const objects = generateObjects(GENERATED_OBJECTS_NUMBER);
