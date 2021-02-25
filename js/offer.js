@@ -1,5 +1,8 @@
 import {getHousingName} from './data.js';
 
+const OFFER_TITLE_MIN_LENGTH = 30;
+const OFFER_TITLE_MAX_LENGTH = 100;
+
 const getRoomsString = function (rooms) {
   let roomsStr = (rooms === 1)? 'комната' : 'комнат';
   if (rooms >= 2 && rooms <= 4) {
@@ -59,4 +62,4 @@ const createElements = function (objects) {
   return offerElements;
 }
 
-export {createElements};
+export {createElements, OFFER_TITLE_MIN_LENGTH, OFFER_TITLE_MAX_LENGTH};

@@ -1,7 +1,5 @@
 import {getRandomInt, getRandomFloat} from './util.js';
-
-const OFFER_TITLE_MIN_LENGTH = 30;
-const OFFER_TITLE_MAX_LENGTH = 100;
+import {OFFER_TITLE_MIN_LENGTH, OFFER_TITLE_MAX_LENGTH} from './offer.js'
 
 const generateAuthor = function () {
   const random = '0' + getRandomInt(1, 8);
