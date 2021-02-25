@@ -4,7 +4,7 @@ import {
   addChangeListeners as addFormChangeListeners, 
   setToState as setFormToState,
   setAddress as setFormAddress,
-  setValidation as setFormValidation,
+  setValidation as setFormValidation
 } from './form.js';
 import {Map} from './map.js';
 
@@ -33,4 +33,4 @@ map.addMainMarker(Tokyo);
 map.addMarkers(objects);
 map.setMarkersPopups(offersElements, 300, 300);
 
-setFormValidation('#title', '#price');
+setFormValidation('#title', '#price', ['#room_number', '#capacity']);

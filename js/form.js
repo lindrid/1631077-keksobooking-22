@@ -49,7 +49,7 @@ const setAddress = function (latitude, longitude) {
   addressElement.value = `${latitude}, ${longitude}`;
 }
 
-const setValidation = function (title, price) {
+const setValidation = function (title, price, [roomNumber, capacity]) {
   const titleInput = document.querySelector(title);
   titleInput.addEventListener('input', () => {
     if (titleInput.value.length < OFFER_TITLE_MIN_LENGTH) {
@@ -69,9 +69,7 @@ const setValidation = function (title, price) {
   const priceInput = document.querySelector(price);
   priceInput.addEventListener('input', () => {
     if (priceInput.value < priceInput.min) {
-      priceInput.setCustomValidity('Значение должно быть больше или равно ' 
-        + priceInput.min
-      );
+      priceInput.setCustomValidity('Значение должно быть больше или равно ' + priceInput.min);
     }
     else if (priceInput.value > OFFER_MAX_PRICE) {
       priceInput.setCustomValidity('Максимальное значение — ' + OFFER_MAX_PRICE);
@@ -80,6 +78,30 @@ const setValidation = function (title, price) {
       priceInput.setCustomValidity('');
     }
     priceInput.reportValidity();
+  });
+  
+  const roomNumberSelect = document.querySelector(roomNumber);
+  const capacitySelect = document.querySelector(capacity);
+  roomNumberSelect.addEventListener('change', () => {
+    const value = +roomNumberSelect.value;
+    capacitySelect.value = value;
+
+    if (value === 100) {
+      for (let option of capacitySelect.options) {
+        option.disabled = false;
+        if (+option.value !== value) {
+          option.disabled = true;
+        }
+      }
+    }
+    else {
+      for (let option of capacitySelect.options) {
+        option.disabled = false; 
+        if (+option.value > value) {
+          option.disabled = true;
+        }
+      }
+    }
   });
 }
 
