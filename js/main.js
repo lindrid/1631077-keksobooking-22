@@ -3,7 +3,8 @@ import {createElements as createOffersElements} from './offer.js';
 import {
   addChangeListeners as addFormChangeListeners, 
   setToState as setFormToState,
-  setAddress as setFormAddress
+  setAddress as setFormAddress,
+  setValidation as setFormValidation,
 } from './form.js';
 import {Map} from './map.js';
 
@@ -31,3 +32,5 @@ map.setView(Tokyo, MAP_SCALE);
 map.addMainMarker(Tokyo);
 map.addMarkers(objects);
 map.setMarkersPopups(offersElements, 300, 300);
+
+setFormValidation('#title', '#price');

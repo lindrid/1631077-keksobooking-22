@@ -2,6 +2,11 @@ import {getHousingName} from './data.js';
 
 const OFFER_TITLE_MIN_LENGTH = 30;
 const OFFER_TITLE_MAX_LENGTH = 100;
+const OFFER_MAX_PRICE = 1000000;
+const MIN_BUNGALOW_PRICE = 0;
+const MIN_FLAT_PRICE = 1000;
+const MIN_HOUSE_PRICE = 5000;
+const MIN_PALACE_PRICE = 10000;
 
 const getRoomsString = function (rooms) {
   let roomsStr = (rooms === 1)? 'комната' : 'комнат';
@@ -62,4 +67,5 @@ const createElements = function (objects) {
   return offerElements;
 }
 
-export {createElements, OFFER_TITLE_MIN_LENGTH, OFFER_TITLE_MAX_LENGTH};
+export {createElements, OFFER_TITLE_MIN_LENGTH, OFFER_TITLE_MAX_LENGTH, OFFER_MAX_PRICE,
+  MIN_BUNGALOW_PRICE, MIN_FLAT_PRICE, MIN_HOUSE_PRICE, MIN_PALACE_PRICE};
