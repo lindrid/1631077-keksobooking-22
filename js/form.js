@@ -1,4 +1,5 @@
 import {getHousingMinPrice} from './data.js'
+import {OFFER_TITLE_MIN_LENGTH, OFFER_TITLE_MAX_LENGTH} from './offer.js'
 
 const addChangeListeners = function () {
   const typeElement = document.querySelector('#type');
@@ -46,6 +47,15 @@ const setToState = function (state) {
 const setAddress = function (latitude, longitude) {
   const addressElement = document.querySelector('#address');
   addressElement.value = `${latitude}, ${longitude}`;
+}
+
+const setFormValidation = function () {
+  const titleInput = document.querySelector('#title');
+  titleInput.addEventListener('input', (evt) => {
+    if (titleInput.value.length < OFFER_TITLE_MIN_LENGTH) {
+      
+    }
+  });
 }
 
 export {addChangeListeners, setToState, setAddress};
