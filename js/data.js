@@ -1,7 +1,8 @@
 import {getRandomInt, getRandomFloat} from './util.js';
-
-const OFFER_TITLE_MIN_LENGTH = 30;
-const OFFER_TITLE_MAX_LENGTH = 100;
+import {
+  OFFER_TITLE_MIN_LENGTH, OFFER_TITLE_MAX_LENGTH,
+  MIN_BUNGALOW_PRICE, MIN_FLAT_PRICE,
+  MIN_HOUSE_PRICE, MIN_PALACE_PRICE} from './offer.js';
 
 const generateAuthor = function () {
   const random = '0' + getRandomInt(1, 8);
@@ -20,10 +21,14 @@ const generateLocation = function () {
 };
 
 const housingsAttributes = {
-  palace:   {name: 'дворец',    roomsRange: [10, 20],  coefficientRange: [10, 15], minPrice: 10000}, 
-  flat:     {name: 'квартира',  roomsRange: [1, 5],    coefficientRange: [10, 15], minPrice: 1000}, 
-  house:    {name: 'дом',       roomsRange: [5, 10],   coefficientRange: [10, 15], minPrice: 5000},
-  bungalow: {name: 'бунгало',   roomsRange: [1, 3],    coefficientRange: [0, 5],   minPrice: 0},
+  palace:   {name: 'дворец',    roomsRange: [10, 20],  coefficientRange: [10, 15], 
+    minPrice: MIN_PALACE_PRICE}, 
+  flat:     {name: 'квартира',  roomsRange: [1, 5],    coefficientRange: [10, 15], 
+    minPrice: MIN_FLAT_PRICE}, 
+  house:    {name: 'дом',       roomsRange: [5, 10],   coefficientRange: [10, 15], 
+    minPrice: MIN_HOUSE_PRICE},
+  bungalow: {name: 'бунгало',   roomsRange: [1, 3],    coefficientRange: [0, 5],   
+    minPrice: MIN_BUNGALOW_PRICE},
 };
 
 const getWithCapital = (str) => str.charAt(0).toUpperCase() + str.slice(1);

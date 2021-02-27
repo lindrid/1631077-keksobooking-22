@@ -1,4 +1,5 @@
-import {getHousingMinPrice} from './data.js'
+import {getHousingMinPrice} from './data.js';
+import {OFFER_TITLE_MIN_LENGTH, OFFER_TITLE_MAX_LENGTH, OFFER_MAX_PRICE} from './offer.js';
 
 const addChangeListeners = function () {
   const typeElement = document.querySelector('#type');
@@ -48,4 +49,60 @@ const setAddress = function (latitude, longitude) {
   addressElement.value = `${latitude}, ${longitude}`;
 }
 
-export {addChangeListeners, setToState, setAddress};
+const setValidation = function (title, price, [roomNumber, capacity]) {
+  const titleInput = document.querySelector(title);
+  titleInput.addEventListener('input', () => {
+    if (titleInput.value.length < OFFER_TITLE_MIN_LENGTH) {
+      const count = OFFER_TITLE_MIN_LENGTH - titleInput.value.length;
+      titleInput.setCustomValidity('Еще ' + count + ' симв.');
+    }
+    else if (titleInput.value.length > OFFER_TITLE_MAX_LENGTH) {
+      const count = titleInput.value.length - OFFER_TITLE_MAX_LENGTH;
+      titleInput.setCustomValidity('Превышение максимальной длины на ' + count + ' симв.');
+    }
+    else {
+      titleInput.setCustomValidity('');
+    }
+    titleInput.reportValidity();
+  });
+
+  const priceInput = document.querySelector(price);
+  priceInput.addEventListener('input', () => {
+    if (priceInput.value < priceInput.min) {
+      priceInput.setCustomValidity('Значение должно быть больше или равно ' + priceInput.min);
+    }
+    else if (priceInput.value > OFFER_MAX_PRICE) {
+      priceInput.setCustomValidity('Максимальное значение — ' + OFFER_MAX_PRICE);
+    }
+    else {
+      priceInput.setCustomValidity('');
+    }
+    priceInput.reportValidity();
+  });
+  
+  const roomNumberSelect = document.querySelector(roomNumber);
+  const capacitySelect = document.querySelector(capacity);
+  roomNumberSelect.addEventListener('change', () => {
+    const value = +roomNumberSelect.value;
+    capacitySelect.value = value;
+
+    if (value === 100) {
+      for (let option of capacitySelect.options) {
+        option.disabled = false;
+        if (+option.value !== value) {
+          option.disabled = true;
+        }
+      }
+    }
+    else {
+      for (let option of capacitySelect.options) {
+        option.disabled = false; 
+        if (+option.value > value) {
+          option.disabled = true;
+        }
+      }
+    }
+  });
+}
+
+export {addChangeListeners, setToState, setAddress, setValidation};
