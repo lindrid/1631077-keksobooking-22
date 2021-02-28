@@ -58,8 +58,8 @@ class Map {
       const location = object.location;
       const marker = window.L.marker(
         {
-          lat: location.x, 
-          lng: location.y,
+          lat: location.lat, 
+          lng: location.lng,
         },
         {
           icon: this.pinIcon,

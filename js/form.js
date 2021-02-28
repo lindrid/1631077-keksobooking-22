@@ -1,4 +1,4 @@
-import {getHousingMinPrice} from './data.js';
+import {getHousingMinPrice} from './test-data.js';
 import {OFFER_TITLE_MIN_LENGTH, OFFER_TITLE_MAX_LENGTH, OFFER_MAX_PRICE} from './offer.js';
 
 const addChangeListeners = function () {
