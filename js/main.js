@@ -29,7 +29,6 @@ map.setView(Tokyo, MAP_SCALE);
 map.addMainMarker(Tokyo);
 
 getServerData((objects) => {  
-  console.log(objects);
   map.addMarkers(objects);
   map.setMarkersPopups(createOffersElements(objects), 300, 300);
 }); 
