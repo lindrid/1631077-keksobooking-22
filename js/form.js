@@ -1,5 +1,19 @@
 import {getHousingMinPrice} from './test-data.js';
 import {OFFER_TITLE_MIN_LENGTH, OFFER_TITLE_MAX_LENGTH, OFFER_MAX_PRICE} from './offer.js';
+import {sendData} from './server-data.js';
+
+const formElement = document.querySelector('.ad-form');
+
+const setFormSubmit = function () {
+  formElement.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    const formData = new FormData(formElement);
+    sendData(formData, (json) => {
+      console.log(json);
+      formElement.reset();
+    });
+  })
+}
 
 const addChangeListeners = function () {
   const typeElement = document.querySelector('#type');
@@ -23,7 +37,6 @@ const addChangeListeners = function () {
 }
 
 const setToState = function (state) {
-  const formElement = document.querySelector('.ad-form');
   const fieldsets = formElement.querySelectorAll('fieldset');
   const filtersFormElement = document.querySelector('.map__filters');
 
@@ -105,4 +118,4 @@ const setValidation = function (title, price, [roomNumber, capacity]) {
   });
 }
 
-export {addChangeListeners, setToState, setAddress, setValidation};
+export {addChangeListeners, setToState, setAddress, setValidation, setFormSubmit};

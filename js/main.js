@@ -4,7 +4,8 @@ import {
   addChangeListeners as addFormChangeListeners, 
   setToState as setFormToState,
   setAddress as setFormAddress,
-  setValidation as setFormValidation
+  setValidation as setFormValidation,
+  setFormSubmit
 } from './form.js';
 import {Map} from './map.js';
 
@@ -34,3 +35,4 @@ getServerData((objects) => {
 }); 
 
 setFormValidation('#title', '#price', ['#room_number', '#capacity']);
+setFormSubmit();
