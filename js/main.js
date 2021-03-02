@@ -5,8 +5,10 @@ import {
   setToState as setFormToState,
   setAddress as setFormAddress,
   setValidation as setFormValidation,
-  setFormSubmit,
+  doOnSubmit as doOnFormSubmit,
   setAddressToDisabled as setFormAddressToDisabled,
+  resetForm,
+  showSuccessMessage
 } from './form.js';
 import {Map} from './map.js';
 
@@ -37,8 +39,12 @@ getServerData((objects) => {
 }); 
 
 setFormValidation('#title', '#price', ['#room_number', '#capacity']);
-setFormSubmit((json) => {
-  console.log(json);
-  formElement.reset();
+
+const onSuccess = (json) => {
+  resetForm();
+  map.moveMainMarkerTo(Tokyo);
   setFormAddressToDisabled(true);
-});
+  showSuccessMessage();
+};
+
+doOnFormSubmit(onSuccess);

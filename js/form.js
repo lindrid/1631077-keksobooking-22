@@ -4,7 +4,7 @@ import {sendData} from './server-data.js';
 
 const formElement = document.querySelector('.ad-form');
 
-const setFormSubmit = function (onSuccess) {
+const doOnSubmit = function (onSuccess) {
   formElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
     setAddressToDisabled(false);
@@ -13,6 +13,28 @@ const setFormSubmit = function (onSuccess) {
       onSuccess(json);
     });
   })
+}
+
+const resetForm = function () {
+  formElement.reset();
+}
+
+const showSuccessMessage = function () {
+  const successTepmplate = document.querySelector('#success').content;
+  const successDiv = successTepmplate.querySelector('div');
+  const successElement = successDiv.cloneNode(true);
+  const mainElement = document.querySelector('main');
+  mainElement.append(successElement);
+
+  window.addEventListener('click', () => {
+    successElement.classList.add('hidden');
+  });
+
+  window.addEventListener('keydown', (evt) => {
+    if (evt.key === 'Escape') {
+      successElement.classList.add('hidden');
+    }
+  });
 }
 
 const addChangeListeners = function () {
@@ -128,6 +150,8 @@ export {
   setToState, 
   setAddress, 
   setValidation, 
-  setFormSubmit, 
-  setAddressToDisabled
+  doOnSubmit, 
+  setAddressToDisabled,
+  resetForm,
+  showSuccessMessage,
 };
