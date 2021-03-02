@@ -4,13 +4,13 @@ import {sendData} from './server-data.js';
 
 const formElement = document.querySelector('.ad-form');
 
-const setFormSubmit = function () {
+const setFormSubmit = function (onSuccess) {
   formElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
+    setAddressToDisabled(false);
     const formData = new FormData(formElement);
     sendData(formData, (json) => {
-      console.log(json);
-      formElement.reset();
+      onSuccess(json);
     });
   })
 }
@@ -60,6 +60,11 @@ const setToState = function (state) {
 const setAddress = function (latitude, longitude) {
   const addressElement = document.querySelector('#address');
   addressElement.value = `${latitude}, ${longitude}`;
+}
+
+const setAddressToDisabled = function (disabled) {
+  const addressElement = document.querySelector('#address');
+  addressElement.disabled = disabled;
 }
 
 const setValidation = function (title, price, [roomNumber, capacity]) {
@@ -118,4 +123,11 @@ const setValidation = function (title, price, [roomNumber, capacity]) {
   });
 }
 
-export {addChangeListeners, setToState, setAddress, setValidation, setFormSubmit};
+export {
+  addChangeListeners, 
+  setToState, 
+  setAddress, 
+  setValidation, 
+  setFormSubmit, 
+  setAddressToDisabled
+};

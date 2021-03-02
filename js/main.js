@@ -5,7 +5,8 @@ import {
   setToState as setFormToState,
   setAddress as setFormAddress,
   setValidation as setFormValidation,
-  setFormSubmit
+  setFormSubmit,
+  setAddressToDisabled as setFormAddressToDisabled,
 } from './form.js';
 import {Map} from './map.js';
 
@@ -24,6 +25,7 @@ const map = new Map('map-canvas');
 map.onLoad(() => {
   setFormToState('active');
   setFormAddress(Tokyo.LATITUDE, Tokyo.LONGITUDE);
+  setFormAddressToDisabled(true);
 });
 
 map.setView(Tokyo, MAP_SCALE);
@@ -35,4 +37,8 @@ getServerData((objects) => {
 }); 
 
 setFormValidation('#title', '#price', ['#room_number', '#capacity']);
-setFormSubmit();
+setFormSubmit((json) => {
+  console.log(json);
+  formElement.reset();
+  setFormAddressToDisabled(true);
+});
