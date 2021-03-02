@@ -7,9 +7,11 @@ import {
   setValidation as setFormValidation,
   setFormSubmit,
   setAddressToDisabled as setFormAddressToDisabled,
-  resetForm,
+  resetAdForm,
+  resetMapFiltersForm,
   showSuccessMessage,
   showErrorMessage,
+  setClearButtonClick,
 } from './form.js';
 import {Map} from './map.js';
 
@@ -51,7 +53,8 @@ setFormValidation('#title', '#price', ['#room_number', '#capacity']);
 
 
 doOnSuccess = () => {
-  resetForm();
+  resetAdForm();
+  resetMapFiltersForm();
   map.moveMainMarkerTo(Tokyo);
   setFormAddressToDisabled(true);
   showSuccessMessage();
@@ -60,3 +63,4 @@ doOnSuccess = () => {
 doOnFail = () => showErrorMessage();
 
 setFormSubmit(doOnSuccess, doOnFail);
+setClearButtonClick(doOnSuccess);

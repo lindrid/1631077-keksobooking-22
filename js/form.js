@@ -2,13 +2,14 @@ import {getHousingMinPrice} from './test-data.js';
 import {OFFER_TITLE_MIN_LENGTH, OFFER_TITLE_MAX_LENGTH, OFFER_MAX_PRICE} from './offer.js';
 import {sendData} from './server-data.js';
 
-const formElement = document.querySelector('.ad-form');
+const adForm = document.querySelector('.ad-form');
+const mapFiltersForm = document.querySelector('.map__filters');
 
 const setFormSubmit = function (onSuccess, onFail) {
-  formElement.addEventListener('submit', (evt) => {
+  adForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
     setAddressToDisabled(false);
-    const formData = new FormData(formElement);
+    const formData = new FormData(adForm);
     sendData(
       formData, 
       () => onSuccess(),
@@ -17,8 +18,12 @@ const setFormSubmit = function (onSuccess, onFail) {
   });
 }
 
-const resetForm = function () {
-  formElement.reset();
+const resetAdForm = function () {
+  adForm.reset();
+}
+
+const resetMapFiltersForm = function () {
+  mapFiltersForm.reset();
 }
 
 const showSuccessMessage = function () {
@@ -85,14 +90,14 @@ const addChangeListeners = function () {
 }
 
 const setToState = function (state) {
-  const fieldsets = formElement.querySelectorAll('fieldset');
+  const fieldsets = adForm.querySelectorAll('fieldset');
   const filtersFormElement = document.querySelector('.map__filters');
 
   if (state === 'inactive') {
-    formElement.classList.add('.ad-form--disabled');
+    adForm.classList.add('.ad-form--disabled');
   }
   if (state === 'active') {
-    formElement.classList.remove('.ad-form--disabled');
+    adForm.classList.remove('.ad-form--disabled');
   }
 
   fieldsets.forEach((fieldset) => {
@@ -171,6 +176,14 @@ const setValidation = function (title, price, [roomNumber, capacity]) {
   });
 }
 
+const setClearButtonClick = function (callback) {
+  const clearButton = document.querySelector('.ad-form__reset');
+  clearButton.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    callback();
+  })
+}
+
 export {
   addChangeListeners, 
   setToState, 
@@ -178,7 +191,9 @@ export {
   setValidation, 
   setFormSubmit, 
   setAddressToDisabled,
-  resetForm,
+  resetAdForm,
+  resetMapFiltersForm,
   showSuccessMessage,
   showErrorMessage,
+  setClearButtonClick,
 };
