@@ -4,15 +4,17 @@ import {sendData} from './server-data.js';
 
 const formElement = document.querySelector('.ad-form');
 
-const doOnSubmit = function (onSuccess) {
+const setFormSubmit = function (onSuccess, onFail) {
   formElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
     setAddressToDisabled(false);
     const formData = new FormData(formElement);
-    sendData(formData, (json) => {
-      onSuccess(json);
-    });
-  })
+    sendData(
+      formData, 
+      () => onSuccess(),
+      () => onFail()
+    );
+  });
 }
 
 const resetForm = function () {
@@ -35,6 +37,30 @@ const showSuccessMessage = function () {
       successElement.classList.add('hidden');
     }
   });
+}
+
+const showErrorMessage = function () {
+  const errorTepmplate = document.querySelector('#error').content;
+  const errorDiv = errorTepmplate.querySelector('div');
+  const errorButton = errorDiv.querySelector('.error__button');
+
+  const errorElement = errorDiv.cloneNode(true);
+  const mainElement = document.querySelector('main');
+  mainElement.append(errorElement);
+
+  window.addEventListener('click', () => {
+    errorElement.classList.add('hidden');
+  });
+
+  window.addEventListener('keydown', (evt) => {
+    if (evt.key === 'Escape') {
+      errorElement.classList.add('hidden');
+    }
+  });
+
+  errorButton.addEventListener('click', () => {
+    errorElement.classList.add('hidden');
+  })
 }
 
 const addChangeListeners = function () {
@@ -150,8 +176,9 @@ export {
   setToState, 
   setAddress, 
   setValidation, 
-  doOnSubmit, 
+  setFormSubmit, 
   setAddressToDisabled,
   resetForm,
   showSuccessMessage,
+  showErrorMessage,
 };

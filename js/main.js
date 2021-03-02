@@ -1,14 +1,15 @@
-import {getData as getServerData} from './server-data.js';
+import {getData as getServerData, showAlert} from './server-data.js';
 import {createElements as createOffersElements} from './offer.js';
 import {
   addChangeListeners as addFormChangeListeners, 
   setToState as setFormToState,
   setAddress as setFormAddress,
   setValidation as setFormValidation,
-  doOnSubmit as doOnFormSubmit,
+  setFormSubmit,
   setAddressToDisabled as setFormAddressToDisabled,
   resetForm,
-  showSuccessMessage
+  showSuccessMessage,
+  showErrorMessage,
 } from './form.js';
 import {Map} from './map.js';
 
@@ -33,18 +34,29 @@ map.onLoad(() => {
 map.setView(Tokyo, MAP_SCALE);
 map.addMainMarker(Tokyo);
 
-getServerData((objects) => {  
+
+let doOnSuccess = (objects) => {  
   map.addMarkers(objects);
   map.setMarkersPopups(createOffersElements(objects), 300, 300);
-}); 
+};
+
+let doOnFail = (message) => {
+  showAlert(message, '.server__map_data_error');
+};
+
+getServerData(doOnSuccess, doOnFail); 
+
 
 setFormValidation('#title', '#price', ['#room_number', '#capacity']);
 
-const onSuccess = (json) => {
+
+doOnSuccess = () => {
   resetForm();
   map.moveMainMarkerTo(Tokyo);
   setFormAddressToDisabled(true);
   showSuccessMessage();
 };
 
-doOnFormSubmit(onSuccess);
+doOnFail = () => showErrorMessage();
+
+setFormSubmit(doOnSuccess, doOnFail);

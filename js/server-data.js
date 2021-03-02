@@ -11,7 +11,7 @@ const showAlert = function (message, selector) {
   }, ERROR_DISPLAY_DURATION);
 }
 
-const getData = function (onSuccess) {
+const getData = function (onSuccess, onFail) {
   fetch("https://22.javascript.pages.academy/keksobooking/data")
     .then((response) => {
       if (response.ok) {
@@ -20,24 +20,23 @@ const getData = function (onSuccess) {
       throw new Error(`"${response.status} - ${response.statusText}"`);
     })
     .then((offers) => onSuccess(offers))
-    .catch((error) => showAlert('Не удалось получить данные от сервера. Ошибка, которую вернул сервер: ' + 
-      error, '.server__map_error'));
+    .catch((error) => onFail('Не удалось получить данные от сервера. Ошибка, которую вернул сервер: ' + 
+      error));
 }
 
-const sendData = function (body, onSuccess) {
+const sendData = function (body, onSuccess, onFail) {
   fetch('https://22.javascript.pages.academy/keksobooking', {
     method: 'POST',
     body: body,
   })
   .then((response) => {
     if (response.ok) {
-      return response.json();
+      return true;
     }
     throw new Error(`"${response.status} - ${response.statusText}"`);
   })
-  .then((json) => onSuccess(json))
-  .catch((error) => showAlert('Не удалось отправить форму. Ошибка, которую вернул сервер: ' + 
-    error, '.server__submit_error'));
+  .then(() => onSuccess())
+  .catch((error) => onFail());
 }
 
-export {getData, sendData};
+export {getData, sendData, showAlert};
