@@ -26,18 +26,18 @@ const getData = function (onSuccess) {
 
 const sendData = function (body, onSuccess) {
   fetch('https://22.javascript.pages.academy/keksobooking', {
-      method: 'POST',
-      body: body,
-    })
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
-      }
-      throw new Error(`"${response.status} - ${response.statusText}"`);
-    })
-    .then((json) => onSuccess(json))
-    .catch((error) => showAlert('Не удалось отправить форму. Ошибка, которую вернул сервер: ' + 
-      error, '.server__submit_error'));
+    method: 'POST',
+    body: body,
+  })
+  .then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error(`"${response.status} - ${response.statusText}"`);
+  })
+  .then((json) => onSuccess(json))
+  .catch((error) => showAlert('Не удалось отправить форму. Ошибка, которую вернул сервер: ' + 
+    error, '.server__submit_error'));
 }
 
 export {getData, sendData};
