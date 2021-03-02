@@ -54,7 +54,7 @@ class Map {
   }
 
   moveMainMarkerTo(point) {
-    this.marker.setLatLng(L.latLng(point.LATITUDE, point.LONGITUDE));
+    this.marker.setLatLng(window.L.latLng(point.LATITUDE, point.LONGITUDE));
     setFormAddress(point.LATITUDE, point.LONGITUDE);
   }
 

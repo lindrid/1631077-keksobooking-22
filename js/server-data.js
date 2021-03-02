@@ -3,8 +3,8 @@ const ERROR_DISPLAY_DURATION = 10000;
 const showAlert = function (message, selector) {
   const div = document.querySelector(selector);
   div.innerHTML = message;
-  div.style = "text-align: center; background-color: red; color: white; font-size: 18px;" +
-    "padding-top: 5px; padding-bottom: 5px;";
+  div.style = 'text-align: center; background-color: red; color: white; font-size: 18px;' +
+    'padding-top: 5px; padding-bottom: 5px;';
   setTimeout(() => {
     div.innerHTML = '';
     div.style = '';
@@ -12,7 +12,7 @@ const showAlert = function (message, selector) {
 }
 
 const getData = function (onSuccess, onFail) {
-  fetch("https://22.javascript.pages.academy/keksobooking/data")
+  fetch('https://22.javascript.pages.academy/keksobooking/data')
     .then((response) => {
       if (response.ok) {
         return response.json();
@@ -29,14 +29,14 @@ const sendData = function (body, onSuccess, onFail) {
     method: 'POST',
     body: body,
   })
-  .then((response) => {
-    if (response.ok) {
-      return true;
-    }
-    throw new Error(`"${response.status} - ${response.statusText}"`);
-  })
-  .then(() => onSuccess())
-  .catch((error) => onFail());
+    .then((response) => {
+      if (response.ok) {
+        return true;
+      }
+      throw new Error(`"${response.status} - ${response.statusText}"`);
+    })
+    .then(() => onSuccess())
+    .catch(() => onFail());
 }
 
 export {getData, sendData, showAlert};

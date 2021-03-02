@@ -13,7 +13,7 @@ const setFormSubmit = function (onSuccess, onFail) {
     sendData(
       formData, 
       () => onSuccess(),
-      () => onFail()
+      () => onFail(),
     );
   });
 }
@@ -195,5 +195,5 @@ export {
   resetMapFiltersForm,
   showSuccessMessage,
   showErrorMessage,
-  setClearButtonClick,
+  setClearButtonClick
 };

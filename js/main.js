@@ -11,11 +11,10 @@ import {
   resetMapFiltersForm,
   showSuccessMessage,
   showErrorMessage,
-  setClearButtonClick,
+  setClearButtonClick
 } from './form.js';
 import {Map} from './map.js';
 
-const GENERATED_OBJECTS_NUMBER = 10;
 const MAP_SCALE = 10;
 const Tokyo = {
   LATITUDE: 35.65283,
