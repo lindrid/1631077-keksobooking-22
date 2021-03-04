@@ -8,7 +8,7 @@ const mapFiltersForm = document.querySelector('.map__filters');
 const setFormSubmit = function (onSuccess, onFail) {
   adForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
-    setAddressToDisabled(false);
+    //setAddressToDisabled(false);
     const formData = new FormData(adForm);
     sendData(
       formData, 
@@ -33,15 +33,19 @@ const showSuccessMessage = function () {
   const mainElement = document.querySelector('main');
   mainElement.append(successElement);
 
-  window.addEventListener('click', () => {
+  const onWindowClick = () => {
     successElement.classList.add('hidden');
-  });
-
-  window.addEventListener('keydown', (evt) => {
+    window.removeEventListener('click', onWindowClick);
+  };
+  const onWindowKeyDown = (evt) => {
     if (evt.key === 'Escape') {
       successElement.classList.add('hidden');
+      window.removeEventListener('keydown', onWindowKeyDown);
     }
-  });
+  }
+  
+  window.addEventListener('click', onWindowClick);
+  window.addEventListener('keydown', onWindowKeyDown);
 }
 
 const showErrorMessage = function () {
@@ -53,19 +57,24 @@ const showErrorMessage = function () {
   const mainElement = document.querySelector('main');
   mainElement.append(errorElement);
 
-  window.addEventListener('click', () => {
+  const onWindowClick = () => {
     errorElement.classList.add('hidden');
-  });
-
-  window.addEventListener('keydown', (evt) => {
+    window.removeEventListener('click', onWindowClick)
+  }
+  const onWindowKeyDown = (evt) => {
     if (evt.key === 'Escape') {
       errorElement.classList.add('hidden');
+      window.removeEventListener('keydown', onWindowKeyDown);
     }
-  });
-
-  errorButton.addEventListener('click', () => {
+  }
+  const onButtonClick = () => {
     errorElement.classList.add('hidden');
-  })
+    errorButton.removeEventListener('click', onButtonClick);
+  };
+
+  window.addEventListener('click', onWindowClick);
+  window.addEventListener('keydown', onWindowKeyDown);
+  errorButton.addEventListener('click', onButtonClick)
 }
 
 const addChangeListeners = function () {

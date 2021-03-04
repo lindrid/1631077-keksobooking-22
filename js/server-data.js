@@ -11,30 +11,28 @@ const showAlert = function (message, selector) {
   }, ERROR_DISPLAY_DURATION);
 }
 
-const getData = function (onSuccess, onFail) {
-  fetch('https://22.javascript.pages.academy/keksobooking/data')
+const request = function (url, method, body) {
+  return fetch(url, {
+    method: method,
+    body: body
+  })
     .then((response) => {
       if (response.ok) {
         return response.json();
       }
       throw new Error(`"${response.status} - ${response.statusText}"`);
     })
+}
+
+const getData = function (onSuccess, onFail, body) {
+  request('https://22.javascript.pages.academy/keksobooking/data', 'GET')
     .then((offers) => onSuccess(offers))
     .catch((error) => onFail('Не удалось получить данные от сервера. Ошибка, которую вернул сервер: ' + 
       error));
 }
 
 const sendData = function (body, onSuccess, onFail) {
-  fetch('https://22.javascript.pages.academy/keksobooking', {
-    method: 'POST',
-    body: body,
-  })
-    .then((response) => {
-      if (response.ok) {
-        return true;
-      }
-      throw new Error(`"${response.status} - ${response.statusText}"`);
-    })
+  request('https://22.javascript.pages.academy/keksobooking', 'POST', body)
     .then(() => onSuccess())
     .catch(() => onFail());
 }

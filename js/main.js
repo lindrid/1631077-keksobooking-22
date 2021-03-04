@@ -24,29 +24,32 @@ const Tokyo = {
 addFormChangeListeners();
 setFormToState('inactive');
 
+let doOnSuccess = (objects) => {  
+  map.addMarkers(objects);
+  map.setMarkersPopups(createOffersElements(objects), 300, 300);
+};
+
+let mapDataError = false;
+
+let doOnFail = (message) => {
+  showAlert(message, '.server__map_data_error');
+  mapDataError = true;
+};
+
+getServerData(doOnSuccess, doOnFail); 
+
 const map = new Map('map-canvas');
 
 map.onLoad(() => {
-  setFormToState('active');
+  if (!mapDataError) {
+    setFormToState('active');
+  }
   setFormAddress(Tokyo.LATITUDE, Tokyo.LONGITUDE);
   setFormAddressToDisabled(true);
 });
 
 map.setView(Tokyo, MAP_SCALE);
 map.addMainMarker(Tokyo);
-
-
-let doOnSuccess = (objects) => {  
-  map.addMarkers(objects);
-  map.setMarkersPopups(createOffersElements(objects), 300, 300);
-};
-
-let doOnFail = (message) => {
-  showAlert(message, '.server__map_data_error');
-};
-
-getServerData(doOnSuccess, doOnFail); 
-
 
 setFormValidation('#title', '#price', ['#room_number', '#capacity']);
 
