@@ -14,7 +14,7 @@ const showAlert = function (message, selector) {
 const request = function (url, method, body) {
   return fetch(url, {
     method: method,
-    body: body
+    body: body,
   })
     .then((response) => {
       if (response.ok) {
@@ -24,7 +24,7 @@ const request = function (url, method, body) {
     })
 }
 
-const getData = function (onSuccess, onFail, body) {
+const getData = function (onSuccess, onFail) {
   request('https://22.javascript.pages.academy/keksobooking/data', 'GET')
     .then((offers) => onSuccess(offers))
     .catch((error) => onFail('Не удалось получить данные от сервера. Ошибка, которую вернул сервер: ' + 

@@ -8,7 +8,7 @@ const mapFiltersForm = document.querySelector('.map__filters');
 const setFormSubmit = function (onSuccess, onFail) {
   adForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
-    //setAddressToDisabled(false);
+    setAddressToDisabled(false);
     const formData = new FormData(adForm);
     sendData(
       formData, 
