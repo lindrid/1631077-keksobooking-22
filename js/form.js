@@ -15,6 +15,10 @@ const setupFilterForm = function (objects, map) {
 
   mapFiltersForm.addEventListener('change', () => {
     objects.forEach((object, index) => {
+      if (markers[index].isPopupOpen()) {
+        markers[index].closePopup();
+      }
+
       const offer = object.offer;
       if (offer.type === housingTypeSelect.value || housingTypeSelect.value === 'any') {
         map.showMarker(markers[index]);
