@@ -15,6 +15,7 @@ import {
 } from './form.js';
 import {Map} from './map.js';
 
+const OFFERS_NUMBER = 10;
 const MAP_SCALE = 10;
 const Tokyo = {
   LATITUDE: 35.65283,
@@ -26,17 +27,22 @@ setFormToState('inactive');
 
 const map = new Map('map-canvas');
 
-let doOnSuccess = (objects) => {  
+let doOnSuccess = (objects) => {
+  objects = objects.slice(0, OFFERS_NUMBER);  
   map.onLoad(() => {
     setFormToState('active');
     setFormAddress(Tokyo.LATITUDE, Tokyo.LONGITUDE);
     setFormAddressToDisabled(true);
   });
-
   map.setView(Tokyo, MAP_SCALE);
   map.addMainMarker(Tokyo);
   map.addMarkers(objects);
   map.setMarkersPopups(createOffersElements(objects), 300, 300);
+
+  const markers = map.getMarkers();
+  markers.forEach((marker) => {
+    map.hideMarker(marker);
+  });
 };
 
 let doOnFail = (message) => {
@@ -44,9 +50,6 @@ let doOnFail = (message) => {
 };
 
 getServerData(doOnSuccess, doOnFail); 
-
-setFormValidation('#title', '#price', ['#room_number', '#capacity']);
-
 
 doOnSuccess = () => {
   resetAdForm();
@@ -60,3 +63,4 @@ doOnFail = () => showErrorMessage();
 
 setFormSubmit(doOnSuccess, doOnFail);
 setClearButtonClick(doOnSuccess);
+

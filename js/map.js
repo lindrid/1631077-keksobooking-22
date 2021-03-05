@@ -75,6 +75,14 @@ class Map {
     });
   }
 
+  getMarkers () {
+    return this.markers;
+  }
+
+  hideMarker (marker) {
+    marker.remove();
+  }
+
   setMarkersPopups (popupElements, minWidth, maxHeight) {
     for (let i = 0; i < popupElements.length; i++) {
       this.markers[i].bindPopup(popupElements[i], {
