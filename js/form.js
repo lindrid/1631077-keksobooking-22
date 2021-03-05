@@ -14,6 +14,9 @@ const setupFilterForm = function (objects, map) {
   const markers = map.getMarkers();
 
   mapFiltersForm.addEventListener('change', () => {
+    const formData = new FormData(mapFiltersForm);
+    console.log(formData);
+
     objects.forEach((object, index) => {
       if (markers[index].isPopupOpen()) {
         markers[index].closePopup();
