@@ -24,9 +24,9 @@ const Tokyo = {
 addFormChangeListeners();
 setFormToState('inactive');
 
-let doOnSuccess = (objects) => {  
-  const map = new Map('map-canvas');
+const map = new Map('map-canvas');
 
+let doOnSuccess = (objects) => {  
   map.onLoad(() => {
     setFormToState('active');
     setFormAddress(Tokyo.LATITUDE, Tokyo.LONGITUDE);
