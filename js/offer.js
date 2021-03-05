@@ -1,5 +1,3 @@
-import {getHousingName} from './data.js';
-
 const OFFER_TITLE_MIN_LENGTH = 30;
 const OFFER_TITLE_MAX_LENGTH = 100;
 const OFFER_MAX_PRICE = 1000000;
@@ -7,6 +5,13 @@ const MIN_BUNGALOW_PRICE = 0;
 const MIN_FLAT_PRICE = 1000;
 const MIN_HOUSE_PRICE = 5000;
 const MIN_PALACE_PRICE = 10000;
+
+const housingsNames = {
+  palace: 'дворец',
+  flat: 'квартира',
+  house: 'дом',
+  bungalow: 'бунгало',
+};
 
 const getRoomsString = function (rooms) {
   let roomsStr = (rooms === 1)? 'комната' : 'комнат';
@@ -42,11 +47,11 @@ const createElements = function (objects) {
     setTextContent('.popup__title', offer.title);
     setTextContent('.popup__text--address', offer.address);
     setTextContent('.popup__text--price', offer.price + ' ₽/ночь');
-    setTextContent('.popup__type', getHousingName(offer.type));
+    setTextContent('.popup__type', housingsNames[offer.type]);
     setTextContent('.popup__text--capacity', `${getRoomsString(offer.rooms)} для ` +
       `${getGuestsString(offer.guests)}`);
-    setTextContent('.popup__text--time', `Заезд после ${offer.checkIn}, выезд ` +
-      `до ${offer.checkOut}`);
+    setTextContent('.popup__text--time', `Заезд после ${offer.checkin}, выезд ` +
+      `до ${offer.checkout}`);
     setTextContent('.popup__description', offer.description);
     setTextContent('.popup__avatar', author.avatar);
    

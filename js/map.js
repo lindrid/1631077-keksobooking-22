@@ -36,7 +36,7 @@ class Map {
   }
 
   addMainMarker (point) {
-    const marker = window.L.marker(
+    this.marker = window.L.marker(
       {
         lat: point.LATITUDE, 
         lng: point.LONGITUDE,
@@ -50,7 +50,12 @@ class Map {
       setFormAddress(lat.toFixed(5), lng.toFixed(5));
     });
     
-    marker.addTo(this.map);
+    this.marker.addTo(this.map);
+  }
+
+  moveMainMarkerTo(point) {
+    this.marker.setLatLng(window.L.latLng(point.LATITUDE, point.LONGITUDE));
+    setFormAddress(point.LATITUDE, point.LONGITUDE);
   }
 
   addMarkers (objects) {
@@ -58,8 +63,8 @@ class Map {
       const location = object.location;
       const marker = window.L.marker(
         {
-          lat: location.x, 
-          lng: location.y,
+          lat: location.lat, 
+          lng: location.lng,
         },
         {
           icon: this.pinIcon,

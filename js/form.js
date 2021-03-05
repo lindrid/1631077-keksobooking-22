@@ -1,5 +1,81 @@
-import {getHousingMinPrice} from './data.js';
+import {getHousingMinPrice} from './test-data.js';
 import {OFFER_TITLE_MIN_LENGTH, OFFER_TITLE_MAX_LENGTH, OFFER_MAX_PRICE} from './offer.js';
+import {sendData} from './server-data.js';
+
+const adForm = document.querySelector('.ad-form');
+const mapFiltersForm = document.querySelector('.map__filters');
+
+const setFormSubmit = function (onSuccess, onFail) {
+  adForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    setAddressToDisabled(false);
+    const formData = new FormData(adForm);
+    sendData(
+      formData, 
+      () => onSuccess(),
+      () => onFail(),
+    );
+  });
+}
+
+const resetAdForm = function () {
+  adForm.reset();
+}
+
+const resetMapFiltersForm = function () {
+  mapFiltersForm.reset();
+}
+
+const showSuccessMessage = function () {
+  const successTepmplate = document.querySelector('#success').content;
+  const successDiv = successTepmplate.querySelector('div');
+  const successElement = successDiv.cloneNode(true);
+  const mainElement = document.querySelector('main');
+  mainElement.append(successElement);
+
+  const onWindowClick = () => {
+    successElement.classList.add('hidden');
+    window.removeEventListener('click', onWindowClick);
+  };
+  const onWindowKeyDown = (evt) => {
+    if (evt.key === 'Escape') {
+      successElement.classList.add('hidden');
+      window.removeEventListener('keydown', onWindowKeyDown);
+    }
+  }
+  
+  window.addEventListener('click', onWindowClick);
+  window.addEventListener('keydown', onWindowKeyDown);
+}
+
+const showErrorMessage = function () {
+  const errorTepmplate = document.querySelector('#error').content;
+  const errorDiv = errorTepmplate.querySelector('div');
+  const errorButton = errorDiv.querySelector('.error__button');
+
+  const errorElement = errorDiv.cloneNode(true);
+  const mainElement = document.querySelector('main');
+  mainElement.append(errorElement);
+
+  const onWindowClick = () => {
+    errorElement.classList.add('hidden');
+    window.removeEventListener('click', onWindowClick)
+  }
+  const onWindowKeyDown = (evt) => {
+    if (evt.key === 'Escape') {
+      errorElement.classList.add('hidden');
+      window.removeEventListener('keydown', onWindowKeyDown);
+    }
+  }
+  const onButtonClick = () => {
+    errorElement.classList.add('hidden');
+    errorButton.removeEventListener('click', onButtonClick);
+  };
+
+  window.addEventListener('click', onWindowClick);
+  window.addEventListener('keydown', onWindowKeyDown);
+  errorButton.addEventListener('click', onButtonClick)
+}
 
 const addChangeListeners = function () {
   const typeElement = document.querySelector('#type');
@@ -23,15 +99,14 @@ const addChangeListeners = function () {
 }
 
 const setToState = function (state) {
-  const formElement = document.querySelector('.ad-form');
-  const fieldsets = formElement.querySelectorAll('fieldset');
+  const fieldsets = adForm.querySelectorAll('fieldset');
   const filtersFormElement = document.querySelector('.map__filters');
 
   if (state === 'inactive') {
-    formElement.classList.add('.ad-form--disabled');
+    adForm.classList.add('.ad-form--disabled');
   }
   if (state === 'active') {
-    formElement.classList.remove('.ad-form--disabled');
+    adForm.classList.remove('.ad-form--disabled');
   }
 
   fieldsets.forEach((fieldset) => {
@@ -47,6 +122,11 @@ const setToState = function (state) {
 const setAddress = function (latitude, longitude) {
   const addressElement = document.querySelector('#address');
   addressElement.value = `${latitude}, ${longitude}`;
+}
+
+const setAddressToDisabled = function (disabled) {
+  const addressElement = document.querySelector('#address');
+  addressElement.disabled = disabled;
 }
 
 const setValidation = function (title, price, [roomNumber, capacity]) {
@@ -105,4 +185,24 @@ const setValidation = function (title, price, [roomNumber, capacity]) {
   });
 }
 
-export {addChangeListeners, setToState, setAddress, setValidation};
+const setClearButtonClick = function (callback) {
+  const clearButton = document.querySelector('.ad-form__reset');
+  clearButton.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    callback();
+  })
+}
+
+export {
+  addChangeListeners, 
+  setToState, 
+  setAddress, 
+  setValidation, 
+  setFormSubmit, 
+  setAddressToDisabled,
+  resetAdForm,
+  resetMapFiltersForm,
+  showSuccessMessage,
+  showErrorMessage,
+  setClearButtonClick
+};
