@@ -25,31 +25,25 @@ addFormChangeListeners();
 setFormToState('inactive');
 
 let doOnSuccess = (objects) => {  
+  const map = new Map('map-canvas');
+
+  map.onLoad(() => {
+    setFormToState('active');
+    setFormAddress(Tokyo.LATITUDE, Tokyo.LONGITUDE);
+    setFormAddressToDisabled(true);
+  });
+
+  map.setView(Tokyo, MAP_SCALE);
+  map.addMainMarker(Tokyo);
   map.addMarkers(objects);
   map.setMarkersPopups(createOffersElements(objects), 300, 300);
 };
 
-let mapDataError = false;
-
 let doOnFail = (message) => {
   showAlert(message, '.server__map_data_error');
-  mapDataError = true;
 };
 
 getServerData(doOnSuccess, doOnFail); 
-
-const map = new Map('map-canvas');
-
-map.onLoad(() => {
-  if (!mapDataError) {
-    setFormToState('active');
-  }
-  setFormAddress(Tokyo.LATITUDE, Tokyo.LONGITUDE);
-  setFormAddressToDisabled(true);
-});
-
-map.setView(Tokyo, MAP_SCALE);
-map.addMainMarker(Tokyo);
 
 setFormValidation('#title', '#price', ['#room_number', '#capacity']);
 
