@@ -83,6 +83,10 @@ class Map {
     marker.remove();
   }
 
+  showMarker (marker) {
+    marker.addTo(this.map);
+  }
+
   setMarkersPopups (popupElements, minWidth, maxHeight) {
     for (let i = 0; i < popupElements.length; i++) {
       this.markers[i].bindPopup(popupElements[i], {

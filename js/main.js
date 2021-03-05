@@ -43,6 +43,10 @@ let doOnSuccess = (objects) => {
   markers.forEach((marker) => {
     map.hideMarker(marker);
   });
+
+  markers.forEach((marker) => {
+    map.showMarker(marker);
+  });
 };
 
 let doOnFail = (message) => {
