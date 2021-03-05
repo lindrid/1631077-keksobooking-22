@@ -10,12 +10,10 @@ const adForm = document.querySelector('.ad-form');
 const mapFiltersForm = document.querySelector('.map__filters');
 
 const setupFilterForm = function (objects, map) {
-  const housingTypeSelect = mapFiltersForm.querySelector('.map__filter');
   const markers = map.getMarkers();
 
   mapFiltersForm.addEventListener('change', () => {
     const formData = new FormData(mapFiltersForm);
-    console.log(formData);
 
     objects.forEach((object, index) => {
       if (markers[index].isPopupOpen()) {
@@ -23,7 +21,52 @@ const setupFilterForm = function (objects, map) {
       }
 
       const offer = object.offer;
-      if (offer.type === housingTypeSelect.value || housingTypeSelect.value === 'any') {
+      const offerValues = [
+        offer.type.toString(), 
+        offer.price.toString(), 
+        offer.rooms.toString(), 
+        offer.guests.toString(),
+      ];
+      let i = 0;
+      let allValuesAreEqual = true;
+      
+      for (let pair of formData.entries()) {
+        if (['housing-type', 'housing-rooms', 'housing-guests'].includes(pair[0])) {
+          if (pair[1] !== 'any' && pair[1] !== offerValues[i]) {
+            allValuesAreEqual = false;
+            break;
+          }
+        }
+        else if (pair[0] === 'housing-price') {
+          switch (pair[1]) {
+            case 'middle':
+              if (offerValues[i] <= 10000 || offerValues[i] > 50000) {
+                allValuesAreEqual = false;
+              }
+              break;
+            case 'low':
+              if (offerValues[i] > 10000) {
+                allValuesAreEqual = false;
+              }
+              break;
+            case 'high':
+              if (offerValues[i] <= 50000) {
+                allValuesAreEqual = false;
+              }
+              break;
+          }
+          if (!allValuesAreEqual) {
+            break;
+          }
+        }
+        else {
+          if (!offer.features.includes(pair[1])) {
+            allValuesAreEqual = false;
+            break;
+          }
+        }
+      }
+      if (allValuesAreEqual) {
         map.showMarker(markers[index]);
       }
       else {
