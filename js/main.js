@@ -37,6 +37,8 @@ let doOnSuccess = (objects) => {
   map.addMainMarker(Tokyo);
   map.addMarkers(objects);
   map.setMarkersPopups(createOffersElements(objects), 300, 300);
+
+  setFormValidation('#title', '#price', ['#room_number', '#capacity']);
 };
 
 let doOnFail = (message) => {
@@ -44,9 +46,6 @@ let doOnFail = (message) => {
 };
 
 getServerData(doOnSuccess, doOnFail); 
-
-setFormValidation('#title', '#price', ['#room_number', '#capacity']);
-
 
 doOnSuccess = () => {
   resetAdForm();
