@@ -1,14 +1,35 @@
 import {getHousingMinPrice} from './test-data.js';
-import {OFFER_TITLE_MIN_LENGTH, OFFER_TITLE_MAX_LENGTH, OFFER_MAX_PRICE} from './offer.js';
+import {
+  OFFER_TITLE_MIN_LENGTH, 
+  OFFER_TITLE_MAX_LENGTH, 
+  OFFER_MAX_PRICE
+} from './offer.js';
 import {sendData} from './server-data.js';
 
 const adForm = document.querySelector('.ad-form');
 const mapFiltersForm = document.querySelector('.map__filters');
 
+const setupFilterForm = function (objects, map) {
+  const housingTypeSelect = mapFiltersForm.querySelector('.map__filter');
+  const markers = map.getMarkers();
+
+  mapFiltersForm.addEventListener('change', () => {
+    objects.forEach((object, index) => {
+      const offer = object.offer;
+      if (offer.type === housingTypeSelect.value || housingTypeSelect.value === 'any') {
+        map.showMarker(markers[index]);
+      }
+      else {
+        map.hideMarker(markers[index]);
+      }
+    });
+  });
+}
+
 const setFormSubmit = function (onSuccess, onFail) {
   adForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
-    //setAddressToDisabled(false);
+    setAddressToDisabled(false);
     const formData = new FormData(adForm);
     sendData(
       formData, 
@@ -204,5 +225,6 @@ export {
   resetMapFiltersForm,
   showSuccessMessage,
   showErrorMessage,
-  setClearButtonClick
+  setClearButtonClick,
+  setupFilterForm
 };

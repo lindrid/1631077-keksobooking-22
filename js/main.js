@@ -11,7 +11,8 @@ import {
   resetMapFiltersForm,
   showSuccessMessage,
   showErrorMessage,
-  setClearButtonClick
+  setClearButtonClick,
+  setupFilterForm
 } from './form.js';
 import {Map} from './map.js';
 
@@ -28,7 +29,9 @@ setFormToState('inactive');
 const map = new Map('map-canvas');
 
 let doOnSuccess = (objects) => {
-  objects = objects.slice(0, OFFERS_NUMBER);  
+  objects = objects.slice(0, OFFERS_NUMBER);
+  const offersElements = createOffersElements(objects);  
+  
   map.onLoad(() => {
     setFormToState('active');
     setFormAddress(Tokyo.LATITUDE, Tokyo.LONGITUDE);
@@ -37,16 +40,10 @@ let doOnSuccess = (objects) => {
   map.setView(Tokyo, MAP_SCALE);
   map.addMainMarker(Tokyo);
   map.addMarkers(objects);
-  map.setMarkersPopups(createOffersElements(objects), 300, 300);
+  map.setMarkersPopups(offersElements, 300, 300);
 
-  const markers = map.getMarkers();
-  markers.forEach((marker) => {
-    map.hideMarker(marker);
-  });
-
-  markers.forEach((marker) => {
-    map.showMarker(marker);
-  });
+  setFormValidation('#title', '#price', ['#room_number', '#capacity']);
+  setupFilterForm(objects, map);
 };
 
 let doOnFail = (message) => {
@@ -67,4 +64,3 @@ doOnFail = () => showErrorMessage();
 
 setFormSubmit(doOnSuccess, doOnFail);
 setClearButtonClick(doOnSuccess);
-
