@@ -1,22 +1,24 @@
+/* global L */
+
 import {setAddress as setFormAddress} from './form.js';
 
 class Map {
   constructor (elementId) {
     this.markers = new Array(0);
-    this.mainPinIcon = window.L.icon({
+    this.mainPinIcon = L.icon({
       iconUrl: './img/main-pin.svg',
       iconSize: [52, 52],
       iconAnchor: [26, 52],
     });
-    this.pinIcon = window.L.icon({
+    this.pinIcon = L.icon({
       iconUrl: './img/pin.svg',
       iconSize: [52, 52],
       iconAnchor: [26, 52],
     });
 
-    this.map = window.L.map(elementId);
+    this.map = L.map(elementId);
     
-    window.L.tileLayer(
+    L.tileLayer(
       'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -36,7 +38,7 @@ class Map {
   }
 
   addMainMarker (point) {
-    this.marker = window.L.marker(
+    this.marker = L.marker(
       {
         lat: point.LATITUDE, 
         lng: point.LONGITUDE,
@@ -54,14 +56,14 @@ class Map {
   }
 
   moveMainMarkerTo(point) {
-    this.marker.setLatLng(window.L.latLng(point.LATITUDE, point.LONGITUDE));
+    this.marker.setLatLng(L.latLng(point.LATITUDE, point.LONGITUDE));
     setFormAddress(point.LATITUDE, point.LONGITUDE);
   }
 
   addMarkers (objects) {
     objects.forEach((object) => {
       const location = object.location;
-      const marker = window.L.marker(
+      const marker = L.marker(
         {
           lat: location.lat, 
           lng: location.lng,

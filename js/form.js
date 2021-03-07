@@ -1,3 +1,5 @@
+/* global _ */
+
 import {getHousingMinPrice} from './test-data.js';
 import {
   OFFER_TITLE_MIN_LENGTH, 
