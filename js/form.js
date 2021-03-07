@@ -12,7 +12,7 @@ const mapFiltersForm = document.querySelector('.map__filters');
 const setupFilterForm = function (objects, map) {
   const markers = map.getMarkers();
 
-  mapFiltersForm.addEventListener('change', () => {
+  mapFiltersForm.addEventListener('change', _.debounce(() => {
     const formData = new FormData(mapFiltersForm);
 
     objects.forEach((object, index) => {
@@ -39,13 +39,13 @@ const setupFilterForm = function (objects, map) {
         }
         else if (pair[0] === 'housing-price') {
           switch (pair[1]) {
-            case 'middle':
-              if (offerValues[i] <= 10000 || offerValues[i] > 50000) {
+            case 'low':
+              if (offerValues[i] > 10000) {
                 allValuesAreEqual = false;
               }
               break;
-            case 'low':
-              if (offerValues[i] > 10000) {
+            case 'middle':
+              if (offerValues[i] <= 10000 || offerValues[i] > 50000) {
                 allValuesAreEqual = false;
               }
               break;
@@ -65,7 +65,10 @@ const setupFilterForm = function (objects, map) {
             break;
           }
         }
+
+        i++;
       }
+      
       if (allValuesAreEqual) {
         map.showMarker(markers[index]);
       }
@@ -73,7 +76,7 @@ const setupFilterForm = function (objects, map) {
         map.hideMarker(markers[index]);
       }
     });
-  });
+  }, 500));
 }
 
 const setFormSubmit = function (onSuccess, onFail) {
