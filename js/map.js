@@ -96,17 +96,6 @@ class Map {
   showMarker (marker) {
     marker.addTo(this.map);
   }
-
-  setMarkersPopups (popupElements, minWidth, maxHeight) {
-    let i = 0;
-    this.markers.forEach((marker) => {
-      marker.bindPopup(popupElements[i], {
-        minWidth: minWidth,
-        maxHeight: maxHeight,
-      });
-      i++;
-    });
-  }
 }
 
 export {Map};
