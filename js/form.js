@@ -187,7 +187,7 @@ const setToState = function (state) {
 
   fieldsets.forEach((fieldset) => {
     fieldset.disabled = (state === 'inactive')? true : false;
-  })
+  });
 
   const filters = filtersFormElement.children;
   for (let filter of filters) {

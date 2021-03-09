@@ -23,22 +23,22 @@ const Tokyo = {
   LONGITUDE: 139.83948,
 }
 
-addFormChangeListeners();
 setFormToState('inactive');
+addFormChangeListeners();
 
 const map = new Map('map-canvas');
+map.onLoad(() => {
+  setFormToState('active');
+});
+map.setView(Tokyo, MAP_SCALE);
 
 let doOnSuccess = (objects) => {
   objects = objects.slice(0, OFFERS_NUMBER);
   const offersElements = createOffersElements(objects);  
   
-  map.onLoad(() => {
-    setFormToState('active');
-    setFormAddress(Tokyo.LATITUDE, Tokyo.LONGITUDE);
-    setFormAddressToDisabled(true);
-  });
-  map.setView(Tokyo, MAP_SCALE);
   map.addMainMarker(Tokyo);
+  setFormAddress(Tokyo.LATITUDE, Tokyo.LONGITUDE);
+  setFormAddressToDisabled(true);
   map.addMarkers(objects);
   map.setMarkersPopups(offersElements, 300, 300);
 
