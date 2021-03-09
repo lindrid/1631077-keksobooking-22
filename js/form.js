@@ -224,7 +224,7 @@ const setValidation = function (title, price, [roomNumber, capacity]) {
 
   const priceInput = document.querySelector(price);
   priceInput.addEventListener('input', () => {
-    if (priceInput.value < priceInput.min) {
+    if (Number(priceInput.value) < priceInput.min) {
       priceInput.setCustomValidity('Значение должно быть больше или равно ' + priceInput.min);
     }
     else if (priceInput.value > OFFER_MAX_PRICE) {
