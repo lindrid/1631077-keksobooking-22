@@ -26,13 +26,7 @@ const Tokyo = {
 setFormToState('inactive');
 addFormChangeListeners();
 
-const map = new Map('map-canvas');
-map.onLoad(() => {
-  setFormToState('active');
-});
-map.setView(Tokyo, MAP_SCALE);
-
-let doOnSuccess = (objects) => {
+let doOnSuccessGetData = (objects) => {
   objects = objects.slice(0, OFFERS_NUMBER);
   const offersElements = createOffersElements(objects);  
   
@@ -46,13 +40,18 @@ let doOnSuccess = (objects) => {
   setupFilterForm(objects, map);
 };
 
-let doOnFail = (message) => {
+let doOnFailGetData = (message) => {
   showAlert(message, '.server__map_data_error');
 };
 
-getServerData(doOnSuccess, doOnFail); 
+const map = new Map('map-canvas');
+map.onLoad(() => {
+  setFormToState('active');
+  getServerData(doOnSuccessGetData, doOnFailGetData); 
+});
+map.setView(Tokyo, MAP_SCALE);
 
-doOnSuccess = () => {
+const doOnSuccessSendForm = () => {
   resetAdForm();
   resetMapFiltersForm();
   map.moveMainMarkerTo(Tokyo);
@@ -60,7 +59,7 @@ doOnSuccess = () => {
   showSuccessMessage();
 };
 
-doOnFail = () => showErrorMessage();
+const doOnFailSendForm = () => showErrorMessage();
 
-setFormSubmit(doOnSuccess, doOnFail);
-setClearButtonClick(doOnSuccess);
+setFormSubmit(doOnSuccessSendForm, doOnFailSendForm);
+setClearButtonClick(doOnSuccessSendForm);
