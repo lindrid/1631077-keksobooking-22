@@ -11,20 +11,22 @@ const mapFiltersForm = document.querySelector('.map__filters');
 
 const setupFilterForm = function (objects, map) {
   const housingTypeSelect = mapFiltersForm.querySelector('.map__filter');
-  const markers = map.getMarkers();
 
   mapFiltersForm.addEventListener('change', () => {
-    objects.forEach((object, index) => {
-      if (markers[index].isPopupOpen()) {
-        markers[index].closePopup();
-      }
+    objects.forEach((object) => {
+      const marker = map.getMarkerBy(object);
+      if (marker) {
+        if (marker.isPopupOpen()) {
+          marker.closePopup();
+        }
 
-      const offer = object.offer;
-      if (offer.type === housingTypeSelect.value || housingTypeSelect.value === 'any') {
-        map.showMarker(markers[index]);
-      }
-      else {
-        map.hideMarker(markers[index]);
+        const offer = object.offer;
+        if (offer.type === housingTypeSelect.value || housingTypeSelect.value === 'any') {
+          map.showMarker(marker);
+        }
+        else {
+          map.hideMarker(marker);
+        }
       }
     });
   });

@@ -31,7 +31,12 @@ const map = new Map('map-canvas');
 let doOnSuccess = (objects) => {
   objects = objects.slice(0, OFFERS_NUMBER);
   const offersElements = createOffersElements(objects);  
-  
+  const popups = {
+    elements: offersElements,
+    width: 300,
+    height: 300
+  }
+
   map.onLoad(() => {
     setFormToState('active');
     setFormAddress(Tokyo.LATITUDE, Tokyo.LONGITUDE);
@@ -39,8 +44,7 @@ let doOnSuccess = (objects) => {
   });
   map.setView(Tokyo, MAP_SCALE);
   map.addMainMarker(Tokyo);
-  map.addMarkers(objects);
-  map.setMarkersPopups(offersElements, 300, 300);
+  map.addMarkers(objects, popups);
 
   setFormValidation('#title', '#price', ['#room_number', '#capacity']);
   setupFilterForm(objects, map);
