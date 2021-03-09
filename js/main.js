@@ -34,7 +34,7 @@ let doOnSuccess = (objects) => {
   const popups = {
     elements: offersElements,
     width: 300,
-    height: 300
+    height: 300,
   }
 
   map.onLoad(() => {
