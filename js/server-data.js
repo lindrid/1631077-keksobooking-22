@@ -26,7 +26,7 @@ const request = function (url, method, body) {
 
 const getData = function (onSuccess, onFail) {
   request('https://22.javascript.pages.academy/keksobooking/data', 'GET')
-    .then((offers) => onSuccess(offers))
+    .then((objects) => onSuccess(objects))
     .catch((error) => onFail('Не удалось получить данные от сервера. Ошибка, которую вернул сервер: ' + 
       error));
 }

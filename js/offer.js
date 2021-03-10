@@ -13,6 +13,10 @@ const housingsNames = {
   bungalow: 'бунгало',
 };
 
+const getHousingsNames = function () {
+  return housingsNames.slice();
+}
+
 const getRoomsString = function (rooms) {
   let roomsStr = (rooms === 1)? 'комната' : 'комнат';
   if (rooms >= 2 && rooms <= 4) {
@@ -72,5 +76,14 @@ const createElements = function (objects) {
   return offerElements;
 }
 
-export {createElements, OFFER_TITLE_MIN_LENGTH, OFFER_TITLE_MAX_LENGTH, OFFER_MAX_PRICE,
-  MIN_BUNGALOW_PRICE, MIN_FLAT_PRICE, MIN_HOUSE_PRICE, MIN_PALACE_PRICE};
+export {
+  createElements, 
+  getHousingsNames, 
+  OFFER_TITLE_MIN_LENGTH, 
+  OFFER_TITLE_MAX_LENGTH, 
+  OFFER_MAX_PRICE,
+  MIN_BUNGALOW_PRICE,
+  MIN_FLAT_PRICE, 
+  MIN_HOUSE_PRICE, 
+  MIN_PALACE_PRICE
+};

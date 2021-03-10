@@ -58,8 +58,8 @@ class Map {
     setFormAddress(point.LATITUDE, point.LONGITUDE);
   }
 
-  addMarkers (objects) {
-    objects.forEach((object) => {
+  addMarkers (objects, popups) {
+    objects.forEach((object, index) => {
       const location = object.location;
       const marker = window.L.marker(
         {
@@ -71,17 +71,30 @@ class Map {
         },
       );
       marker.addTo(this.map);
-      this.markers.push(marker);
+      marker.bindPopup(popups.elements[index], {
+        minWidth: popups.width,
+        maxHeight: popups.height,
+      });
+      const key = `${location.lat},${location.lng}`;
+      this.markers[key] = marker;
     });
   }
 
-  setMarkersPopups (popupElements, minWidth, maxHeight) {
-    for (let i = 0; i < popupElements.length; i++) {
-      this.markers[i].bindPopup(popupElements[i], {
-        minWidth: minWidth,
-        maxHeight: maxHeight,
-      });
+  getMarkerBy (object) {
+    const location = object.location;
+    const key = `${location.lat},${location.lng}`;
+    if (key in this.markers) {
+      return this.markers[key];
     }
+    return null;
+  }
+
+  hideMarker (marker) {
+    marker.remove();
+  }
+
+  showMarker (marker) {
+    marker.addTo(this.map);
   }
 }
 
