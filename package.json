@@ -17,7 +17,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "lodash": "^4.17.21"
+    "lodash": "4.17.21"
   },
   "scripts": {
     "start": "browser-sync start --server --no-ui --files \"js/**/*.js\"",
