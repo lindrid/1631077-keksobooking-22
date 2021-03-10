@@ -29,12 +29,16 @@ addFormChangeListeners();
 let doOnSuccessGetData = (objects) => {
   objects = objects.slice(0, OFFERS_NUMBER);
   const offersElements = createOffersElements(objects);  
-  
+  const popups = {
+    elements: offersElements,
+    width: 300,
+    height: 300,
+  }
+
   map.addMainMarker(Tokyo);
   setFormAddress(Tokyo.LATITUDE, Tokyo.LONGITUDE);
   setFormAddressToDisabled(true);
-  map.addMarkers(objects);
-  map.setMarkersPopups(offersElements, 300, 300);
+  map.addMarkers(objects, popups);
 
   setFormValidation('#title', '#price', ['#room_number', '#capacity']);
   setupFilterForm(objects, map);

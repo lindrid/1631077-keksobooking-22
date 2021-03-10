@@ -12,14 +12,18 @@ const adForm = document.querySelector('.ad-form');
 const mapFiltersForm = document.querySelector('.map__filters');
 
 const setupFilterForm = function (objects, map) {
-  const markers = map.getMarkers();
-
   mapFiltersForm.addEventListener('change', _.debounce(() => {
     const formData = new FormData(mapFiltersForm);
 
-    objects.forEach((object, index) => {
-      if (markers[index].isPopupOpen()) {
-        markers[index].closePopup();
+    objects.forEach((object) => {
+      const marker = map.getMarkerBy(object);
+
+      if (!marker) {
+        return;
+      }
+      
+      if (marker.isPopupOpen()) {
+        markers.closePopup();
       }
 
       const offer = object.offer;
@@ -72,10 +76,10 @@ const setupFilterForm = function (objects, map) {
       }
       
       if (allValuesAreEqual) {
-        map.showMarker(markers[index]);
+        map.showMarker(marker);
       }
       else {
-        map.hideMarker(markers[index]);
+        map.hideMarker(marker);
       }
     });
   }, 500));
