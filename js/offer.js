@@ -6,15 +6,27 @@ const MIN_FLAT_PRICE = 1000;
 const MIN_HOUSE_PRICE = 5000;
 const MIN_PALACE_PRICE = 10000;
 
-const housingsNames = {
-  palace: 'дворец',
-  flat: 'квартира',
-  house: 'дом',
-  bungalow: 'бунгало',
+const housingsAttributes = {
+  palace: {
+    name: 'дворец',
+    minPrice: MIN_PALACE_PRICE,
+  },
+  flat: {
+    name: 'квартира',
+    minPrice: MIN_FLAT_PRICE,
+  },
+  house: {
+    name: 'дом',
+    minPrice: MIN_HOUSE_PRICE,
+  },
+  bungalow: {
+    name: 'бунгало',
+    minPrice: MIN_BUNGALOW_PRICE,
+  },
 };
 
-const getHousingsNames = function () {
-  return housingsNames.slice();
+const getHousingMinPrice = function (type) {
+  return housingsAttributes[type].minPrice;
 }
 
 const getRoomsString = function (rooms) {
@@ -51,7 +63,7 @@ const createElements = function (objects) {
     setTextContent('.popup__title', offer.title);
     setTextContent('.popup__text--address', offer.address);
     setTextContent('.popup__text--price', offer.price + ' ₽/ночь');
-    setTextContent('.popup__type', housingsNames[offer.type]);
+    setTextContent('.popup__type', housingsAttributes[offer.type].name);
     setTextContent('.popup__text--capacity', `${getRoomsString(offer.rooms)} для ` +
       `${getGuestsString(offer.guests)}`);
     setTextContent('.popup__text--time', `Заезд после ${offer.checkin}, выезд ` +
@@ -78,7 +90,7 @@ const createElements = function (objects) {
 
 export {
   createElements, 
-  getHousingsNames, 
+  getHousingMinPrice, 
   OFFER_TITLE_MIN_LENGTH, 
   OFFER_TITLE_MAX_LENGTH, 
   OFFER_MAX_PRICE,
