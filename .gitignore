@@ -10,3 +10,6 @@ node_modules/
 npm-debug.log*
 Thumbs.db
 .vscode/
+package.json
+package-lock.json
+.gitignore

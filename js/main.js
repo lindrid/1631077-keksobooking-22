@@ -2,7 +2,7 @@ import {getData as getServerData, showAlert} from './server-data.js';
 import {createElements as createOffersElements} from './offer.js';
 import {
   addChangeListeners as addFormChangeListeners, 
-  setToState as setFormToState,
+  setPageToState,
   setAddress as setFormAddress,
   setValidation as setFormValidation,
   setFormSubmit,
@@ -23,7 +23,7 @@ const Tokyo = {
   LONGITUDE: 139.83948,
 }
 
-setFormToState('inactive');
+setPageToState('inactive');
 addFormChangeListeners();
 
 let doOnSuccessGetData = (objects) => {
@@ -50,7 +50,7 @@ let doOnFailGetData = (message) => {
 
 const map = new Map('map-canvas');
 map.onLoad(() => {
-  setFormToState('active');
+  setPageToState('active');
   getServerData(doOnSuccessGetData, doOnFailGetData); 
 });
 map.setView(Tokyo, MAP_SCALE);

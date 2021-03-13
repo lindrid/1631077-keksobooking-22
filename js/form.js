@@ -23,7 +23,7 @@ const setupFilterForm = function (objects, map) {
       }
       
       if (marker.isPopupOpen()) {
-        markers.closePopup();
+        marker.closePopup();
       }
 
       const offer = object.offer;
@@ -178,7 +178,7 @@ const addChangeListeners = function () {
   });
 }
 
-const setToState = function (state) {
+const setPageToState = function (state) {
   const fieldsets = adForm.querySelectorAll('fieldset');
   const filtersFormElement = document.querySelector('.map__filters');
 
@@ -275,7 +275,7 @@ const setClearButtonClick = function (callback) {
 
 export {
   addChangeListeners, 
-  setToState, 
+  setPageToState, 
   setAddress, 
   setValidation, 
   setFormSubmit, 
