@@ -2,7 +2,7 @@ import {getData as getServerData, showAlert} from './server-data.js';
 import {createElements as createOffersElements} from './offer.js';
 import {
   addChangeListeners as addFormChangeListeners, 
-  setToState as setFormToState,
+  setPageToState,
   setAddress as setFormAddress,
   setValidation as setFormValidation,
   setFormSubmit,
@@ -23,12 +23,10 @@ const Tokyo = {
   LONGITUDE: 139.83948,
 }
 
+setPageToState('inactive');
 addFormChangeListeners();
-setFormToState('inactive');
 
-const map = new Map('map-canvas');
-
-let doOnSuccess = (objects) => {
+let doOnSuccessGetData = (objects) => {
   objects = objects.slice(0, OFFERS_NUMBER);
   const offersElements = createOffersElements(objects);  
   const popups = {
@@ -37,26 +35,27 @@ let doOnSuccess = (objects) => {
     height: 300,
   }
 
-  map.onLoad(() => {
-    setFormToState('active');
-    setFormAddress(Tokyo.LATITUDE, Tokyo.LONGITUDE);
-    setFormAddressToDisabled(true);
-  });
-  map.setView(Tokyo, MAP_SCALE);
   map.addMainMarker(Tokyo);
+  setFormAddress(Tokyo.LATITUDE, Tokyo.LONGITUDE);
+  setFormAddressToDisabled(true);
   map.addMarkers(objects, popups);
 
   setFormValidation('#title', '#price', ['#room_number', '#capacity']);
   setupFilterForm(objects, map);
 };
 
-let doOnFail = (message) => {
+let doOnFailGetData = (message) => {
   showAlert(message, '.server__map_data_error');
 };
 
-getServerData(doOnSuccess, doOnFail); 
+const map = new Map('map-canvas');
+map.onLoad(() => {
+  setPageToState('active');
+  getServerData(doOnSuccessGetData, doOnFailGetData); 
+});
+map.setView(Tokyo, MAP_SCALE);
 
-doOnSuccess = () => {
+const doOnSuccessSendForm = () => {
   resetAdForm();
   resetMapFiltersForm();
   map.moveMainMarkerTo(Tokyo);
@@ -64,7 +63,7 @@ doOnSuccess = () => {
   showSuccessMessage();
 };
 
-doOnFail = () => showErrorMessage();
+const doOnFailSendForm = () => showErrorMessage();
 
-setFormSubmit(doOnSuccess, doOnFail);
-setClearButtonClick(doOnSuccess);
+setFormSubmit(doOnSuccessSendForm, doOnFailSendForm);
+setClearButtonClick(doOnSuccessSendForm);

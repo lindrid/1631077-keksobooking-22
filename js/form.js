@@ -1,4 +1,6 @@
-import {getHousingMinPrice} from './test-data.js';
+/* global _ */
+
+import {getHousingMinPrice} from './offer.js';
 import {
   OFFER_TITLE_MIN_LENGTH, 
   OFFER_TITLE_MAX_LENGTH, 
@@ -10,26 +12,82 @@ const adForm = document.querySelector('.ad-form');
 const mapFiltersForm = document.querySelector('.map__filters');
 
 const setupFilterForm = function (objects, map) {
-  const housingTypeSelect = mapFiltersForm.querySelector('.map__filter');
+  mapFiltersForm.addEventListener('change', _.debounce(() => {
+    const formData = new FormData(mapFiltersForm);
+    let controls = [];
 
-  mapFiltersForm.addEventListener('change', () => {
+    for (let pair of formData.entries()) {
+      controls.push({
+        name: pair[0],
+        value: pair[1],
+      });
+    }
+
     objects.forEach((object) => {
       const marker = map.getMarkerBy(object);
-      if (marker) {
-        if (marker.isPopupOpen()) {
-          marker.closePopup();
-        }
 
-        const offer = object.offer;
-        if (offer.type === housingTypeSelect.value || housingTypeSelect.value === 'any') {
-          map.showMarker(marker);
+      if (!marker) {
+        return;
+      }
+      
+      if (marker.isPopupOpen()) {
+        marker.closePopup();
+      }
+
+      const offer = object.offer;
+      const offerValues = {
+        'housing-type': offer.type.toString(), 
+        'housing-price': offer.price.toString(), 
+        'housing-rooms': offer.rooms.toString(), 
+        'housing-guests': offer.guests.toString(),
+      };
+      let allValuesAreEqual = true;
+      
+      for (let control of controls) {
+        if (['housing-type', 'housing-rooms', 'housing-guests'].includes(control.name)) {
+          if (control.value !== 'any' && control.value !== offerValues[control.name]) {
+            allValuesAreEqual = false;
+            break;
+          }
+        }
+        else if (control.name === 'housing-price') {
+          switch (control.value) {
+            case 'low':
+              if (offerValues[control.name] > 10000) {
+                allValuesAreEqual = false;
+              }
+              break;
+            case 'middle':
+              if (offerValues[control.name] <= 10000 || offerValues[control.name] > 50000) {
+                allValuesAreEqual = false;
+              }
+              break;
+            case 'high':
+              if (offerValues[control.name] <= 50000) {
+                allValuesAreEqual = false;
+              }
+              break;
+          }
+          if (!allValuesAreEqual) {
+            break;
+          }
         }
         else {
-          map.hideMarker(marker);
+          if (!offer.features.includes(control.value)) {
+            allValuesAreEqual = false;
+            break;
+          }
         }
       }
+
+      if (allValuesAreEqual) {
+        map.showMarker(marker);
+      }
+      else {
+        map.hideMarker(marker);
+      }
     });
-  });
+  }, 500));
 }
 
 const setFormSubmit = function (onSuccess, onFail) {
@@ -125,7 +183,7 @@ const addChangeListeners = function () {
   });
 }
 
-const setToState = function (state) {
+const setPageToState = function (state) {
   const fieldsets = adForm.querySelectorAll('fieldset');
   const filtersFormElement = document.querySelector('.map__filters');
 
@@ -138,7 +196,7 @@ const setToState = function (state) {
 
   fieldsets.forEach((fieldset) => {
     fieldset.disabled = (state === 'inactive')? true : false;
-  })
+  });
 
   const filters = filtersFormElement.children;
   for (let filter of filters) {
@@ -175,10 +233,10 @@ const setValidation = function (title, price, [roomNumber, capacity]) {
 
   const priceInput = document.querySelector(price);
   priceInput.addEventListener('input', () => {
-    if (priceInput.value < priceInput.min) {
+    if (Number(priceInput.value) < priceInput.min) {
       priceInput.setCustomValidity('Значение должно быть больше или равно ' + priceInput.min);
     }
-    else if (priceInput.value > OFFER_MAX_PRICE) {
+    else if (Number(priceInput.value) > OFFER_MAX_PRICE) {
       priceInput.setCustomValidity('Максимальное значение — ' + OFFER_MAX_PRICE);
     }
     else {
@@ -222,7 +280,7 @@ const setClearButtonClick = function (callback) {
 
 export {
   addChangeListeners, 
-  setToState, 
+  setPageToState, 
   setAddress, 
   setValidation, 
   setFormSubmit, 
