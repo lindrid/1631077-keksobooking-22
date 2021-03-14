@@ -14,6 +14,14 @@ const mapFiltersForm = document.querySelector('.map__filters');
 const setupFilterForm = function (objects, map) {
   mapFiltersForm.addEventListener('change', _.debounce(() => {
     const formData = new FormData(mapFiltersForm);
+    let controls = [];
+
+    for (let pair of formData.entries()) {
+      controls.push({
+        name: pair[0],
+        value: pair[1],
+      });
+    }
 
     objects.forEach((object) => {
       const marker = map.getMarkerBy(object);
@@ -35,30 +43,27 @@ const setupFilterForm = function (objects, map) {
       };
       let allValuesAreEqual = true;
       
-      for (let pair of formData.entries()) {
-        const controlName = pair[0];
-        const controlValue = pair[1];
-
-        if (['housing-type', 'housing-rooms', 'housing-guests'].includes(controlName)) {
-          if (controlValue !== 'any' && controlValue !== offerValues[controlName]) {
+      for (let control of controls) {
+        if (['housing-type', 'housing-rooms', 'housing-guests'].includes(control.name)) {
+          if (control.value !== 'any' && control.value !== offerValues[control.name]) {
             allValuesAreEqual = false;
             break;
           }
         }
-        else if (controlName === 'housing-price') {
-          switch (controlValue) {
+        else if (control.name === 'housing-price') {
+          switch (control.value) {
             case 'low':
-              if (offerValues[controlName] > 10000) {
+              if (offerValues[control.name] > 10000) {
                 allValuesAreEqual = false;
               }
               break;
             case 'middle':
-              if (offerValues[controlName] <= 10000 || offerValues[controlName] > 50000) {
+              if (offerValues[control.name] <= 10000 || offerValues[control.name] > 50000) {
                 allValuesAreEqual = false;
               }
               break;
             case 'high':
-              if (offerValues[controlName] <= 50000) {
+              if (offerValues[control.name] <= 50000) {
                 allValuesAreEqual = false;
               }
               break;
@@ -68,13 +73,13 @@ const setupFilterForm = function (objects, map) {
           }
         }
         else {
-          if (!offer.features.includes(controlValue)) {
+          if (!offer.features.includes(control.value)) {
             allValuesAreEqual = false;
             break;
           }
         }
       }
-      
+
       if (allValuesAreEqual) {
         map.showMarker(marker);
       }
