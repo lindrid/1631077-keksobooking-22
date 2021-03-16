@@ -4,8 +4,8 @@ import {
   addChangeListeners as addFormChangeListeners, 
   setPageToState,
   setAddress as setFormAddress,
-  setValidation as setFormValidation,
-  setFormSubmit,
+  setAdFormValidation,
+  setAdFormSubmit,
   setAddressToDisabled as setFormAddressToDisabled,
   resetAdForm,
   resetMapFiltersForm,
@@ -24,7 +24,7 @@ const Tokyo = {
 }
 
 setPageToState('inactive');
-addFormChangeListeners();
+addFormChangeListeners(['#type', '#price', '#timein', '#timeout']);
 
 let doOnSuccessGetData = (objects) => {
   objects = objects.slice(0, OFFERS_NUMBER);
@@ -40,7 +40,7 @@ let doOnSuccessGetData = (objects) => {
   setFormAddressToDisabled(true);
   map.addMarkers(objects, popups);
 
-  setFormValidation('#title', '#price', ['#room_number', '#capacity']);
+  setAdFormValidation('#title', '#price', ['#room_number', '#capacity']);
   setupFilterForm(objects, map);
 };
 
@@ -55,7 +55,7 @@ map.onLoad(() => {
 });
 map.setView(Tokyo, MAP_SCALE);
 
-const doOnSuccessSendForm = () => {
+const doOnSuccessFormSubmit = () => {
   resetAdForm();
   resetMapFiltersForm();
   map.moveMainMarkerTo(Tokyo);
@@ -63,7 +63,7 @@ const doOnSuccessSendForm = () => {
   showSuccessMessage();
 };
 
-const doOnFailSendForm = () => showErrorMessage();
+const doOnFailFormSubmit = () => showErrorMessage();
 
-setFormSubmit(doOnSuccessSendForm, doOnFailSendForm);
-setClearButtonClick(doOnSuccessSendForm);
+setAdFormSubmit(doOnSuccessFormSubmit, doOnFailFormSubmit);
+setClearButtonClick(doOnSuccessFormSubmit);

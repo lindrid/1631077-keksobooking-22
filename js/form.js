@@ -41,12 +41,12 @@ const setupFilterForm = function (objects, map) {
         'housing-rooms': offer.rooms.toString(), 
         'housing-guests': offer.guests.toString(),
       };
-      let allValuesAreEqual = true;
+      let isOfferEqualToControl = true;
       
       for (let control of controls) {
         if (['housing-type', 'housing-rooms', 'housing-guests'].includes(control.name)) {
           if (control.value !== 'any' && control.value !== offerValues[control.name]) {
-            allValuesAreEqual = false;
+            isOfferEqualToControl = false;
             break;
           }
         }
@@ -54,33 +54,33 @@ const setupFilterForm = function (objects, map) {
           switch (control.value) {
             case 'low':
               if (offerValues[control.name] > 10000) {
-                allValuesAreEqual = false;
+                isOfferEqualToControl = false;
               }
               break;
             case 'middle':
               if (offerValues[control.name] <= 10000 || offerValues[control.name] > 50000) {
-                allValuesAreEqual = false;
+                isOfferEqualToControl = false;
               }
               break;
             case 'high':
               if (offerValues[control.name] <= 50000) {
-                allValuesAreEqual = false;
+                isOfferEqualToControl = false;
               }
               break;
           }
-          if (!allValuesAreEqual) {
+          if (!isOfferEqualToControl) {
             break;
           }
         }
         else {
           if (!offer.features.includes(control.value)) {
-            allValuesAreEqual = false;
+            isOfferEqualToControl = false;
             break;
           }
         }
       }
 
-      if (allValuesAreEqual) {
+      if (isOfferEqualToControl) {
         map.showMarker(marker);
       }
       else {
@@ -90,7 +90,7 @@ const setupFilterForm = function (objects, map) {
   }, 500));
 }
 
-const setFormSubmit = function (onSuccess, onFail) {
+const setAdFormSubmit = function (onSuccess, onFail) {
   adForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
     setAddressToDisabled(false);
@@ -118,14 +118,18 @@ const showSuccessMessage = function () {
   const mainElement = document.querySelector('main');
   mainElement.append(successElement);
 
+  const removeEventsListeners = () => {
+    window.removeEventListener('click', onWindowClick);
+    window.removeEventListener('keydown', onWindowKeyDown);
+  }
   const onWindowClick = () => {
     successElement.classList.add('hidden');
-    window.removeEventListener('click', onWindowClick);
+    removeEventsListeners();
   };
   const onWindowKeyDown = (evt) => {
     if (evt.key === 'Escape') {
       successElement.classList.add('hidden');
-      window.removeEventListener('keydown', onWindowKeyDown);
+      removeEventsListeners();
     }
   }
   
@@ -142,31 +146,38 @@ const showErrorMessage = function () {
   const mainElement = document.querySelector('main');
   mainElement.append(errorElement);
 
+  const removeEventsListeners = () => {
+    window.removeEventListener('click', onWindowClick)
+    window.removeEventListener('keydown', onWindowKeyDown);
+    errorButton.removeEventListener('click', onButtonClick);
+  }
   const onWindowClick = () => {
     errorElement.classList.add('hidden');
-    window.removeEventListener('click', onWindowClick)
+    removeEventsListeners();
   }
   const onWindowKeyDown = (evt) => {
     if (evt.key === 'Escape') {
       errorElement.classList.add('hidden');
-      window.removeEventListener('keydown', onWindowKeyDown);
+      removeEventsListeners();
     }
   }
   const onButtonClick = () => {
     errorElement.classList.add('hidden');
-    errorButton.removeEventListener('click', onButtonClick);
+    removeEventsListeners();
   };
+
 
   window.addEventListener('click', onWindowClick);
   window.addEventListener('keydown', onWindowKeyDown);
   errorButton.addEventListener('click', onButtonClick)
 }
 
-const addChangeListeners = function () {
-  const typeElement = document.querySelector('#type');
-  const priceElement = document.querySelector('#price');
-  const timeinElement = document.querySelector('#timein');
-  const timeoutElement = document.querySelector('#timeout');
+const addChangeListeners = function ([typeSelector, priceSelector, 
+timeinSelector, timeoutSelector]) {
+  const typeElement = document.querySelector(typeSelector);
+  const priceElement = document.querySelector(priceSelector);
+  const timeinElement = document.querySelector(timeinSelector);
+  const timeoutElement = document.querySelector(timeoutSelector);
 
   typeElement.addEventListener('change', (evt) => {
     const minPrice = getHousingMinPrice(evt.target.value);
@@ -185,7 +196,6 @@ const addChangeListeners = function () {
 
 const setPageToState = function (state) {
   const fieldsets = adForm.querySelectorAll('fieldset');
-  const filtersFormElement = document.querySelector('.map__filters');
 
   if (state === 'inactive') {
     adForm.classList.add('.ad-form--disabled');
@@ -198,24 +208,24 @@ const setPageToState = function (state) {
     fieldset.disabled = (state === 'inactive')? true : false;
   });
 
-  const filters = filtersFormElement.children;
+  const filters = mapFiltersForm.children;
   for (let filter of filters) {
     filter.disabled = (state === 'inactive')? true : false;
   }
 }
 
+const addressElement = adForm.querySelector('#address');
+
 const setAddress = function (latitude, longitude) {
-  const addressElement = document.querySelector('#address');
   addressElement.value = `${latitude}, ${longitude}`;
 }
 
 const setAddressToDisabled = function (disabled) {
-  const addressElement = document.querySelector('#address');
   addressElement.disabled = disabled;
 }
 
-const setValidation = function (title, price, [roomNumber, capacity]) {
-  const titleInput = document.querySelector(title);
+const setAdFormValidation = function (title, price, [roomsNumber, capacity]) {
+  const titleInput = adForm.querySelector(title);
   titleInput.addEventListener('input', () => {
     if (titleInput.value.length < OFFER_TITLE_MIN_LENGTH) {
       const count = OFFER_TITLE_MIN_LENGTH - titleInput.value.length;
@@ -231,7 +241,7 @@ const setValidation = function (title, price, [roomNumber, capacity]) {
     titleInput.reportValidity();
   });
 
-  const priceInput = document.querySelector(price);
+  const priceInput = adForm.querySelector(price);
   priceInput.addEventListener('input', () => {
     if (Number(priceInput.value) < priceInput.min) {
       priceInput.setCustomValidity('Значение должно быть больше или равно ' + priceInput.min);
@@ -245,10 +255,10 @@ const setValidation = function (title, price, [roomNumber, capacity]) {
     priceInput.reportValidity();
   });
   
-  const roomNumberSelect = document.querySelector(roomNumber);
-  const capacitySelect = document.querySelector(capacity);
-  roomNumberSelect.addEventListener('change', () => {
-    const value = +roomNumberSelect.value;
+  const roomsNumberSelect = adForm.querySelector(roomsNumber);
+  const capacitySelect = adForm.querySelector(capacity);
+  roomsNumberSelect.addEventListener('change', () => {
+    const value = +roomsNumberSelect.value;
     capacitySelect.value = value;
 
     if (value === 100) {
@@ -271,7 +281,7 @@ const setValidation = function (title, price, [roomNumber, capacity]) {
 }
 
 const setClearButtonClick = function (callback) {
-  const clearButton = document.querySelector('.ad-form__reset');
+  const clearButton = adForm.querySelector('.ad-form__reset');
   clearButton.addEventListener('click', (evt) => {
     evt.preventDefault();
     callback();
@@ -282,8 +292,8 @@ export {
   addChangeListeners, 
   setPageToState, 
   setAddress, 
-  setValidation, 
-  setFormSubmit, 
+  setAdFormValidation, 
+  setAdFormSubmit, 
   setAddressToDisabled,
   resetAdForm,
   resetMapFiltersForm,
