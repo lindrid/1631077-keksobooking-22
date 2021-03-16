@@ -12,7 +12,10 @@ import {
   showSuccessMessage,
   showErrorMessage,
   setClearButtonClick,
-  setupFilterForm
+  setupFilterForm,
+  setFileChangeListener,
+  resetAdFormDivImgElement,
+  clearAdFormDivElement
 } from './form.js';
 import {Map} from './map.js';
 
@@ -57,6 +60,8 @@ map.setView(Tokyo, MAP_SCALE);
 
 const doOnSuccessSendForm = () => {
   resetAdForm();
+  resetAdFormDivImgElement('.ad-form-header__preview', 'img/muffin-grey.svg');
+  clearAdFormDivElement('.ad-form__photo');
   resetMapFiltersForm();
   map.moveMainMarkerTo(Tokyo);
   setFormAddressToDisabled(true);
@@ -67,3 +72,6 @@ const doOnFailSendForm = () => showErrorMessage();
 
 setFormSubmit(doOnSuccessSendForm, doOnFailSendForm);
 setClearButtonClick(doOnSuccessSendForm);
+
+setFileChangeListener('avatar', ['#avatar', '.ad-form-header__preview']);
+setFileChangeListener('housing-photo', ['#images', '.ad-form__photo']);

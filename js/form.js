@@ -8,12 +8,12 @@ import {
 } from './offer.js';
 import {sendData} from './server-data.js';
 
-const adForm = document.querySelector('.ad-form');
-const mapFiltersForm = document.querySelector('.map__filters');
+const adFormElement = document.querySelector('.ad-form');
+const mapFiltersFormElement = document.querySelector('.map__filters');
 
 const setupFilterForm = function (objects, map) {
-  mapFiltersForm.addEventListener('change', _.debounce(() => {
-    const formData = new FormData(mapFiltersForm);
+  mapFiltersFormElement.addEventListener('change', _.debounce(() => {
+    const formData = new FormData(mapFiltersFormElement);
     let controls = [];
 
     for (let pair of formData.entries()) {
@@ -91,10 +91,10 @@ const setupFilterForm = function (objects, map) {
 }
 
 const setFormSubmit = function (onSuccess, onFail) {
-  adForm.addEventListener('submit', (evt) => {
+  adFormElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
     setAddressToDisabled(false);
-    const formData = new FormData(adForm);
+    const formData = new FormData(adFormElement);
     sendData(
       formData, 
       () => onSuccess(),
@@ -103,18 +103,37 @@ const setFormSubmit = function (onSuccess, onFail) {
   });
 }
 
+const resetAdFormDivImgElement = function (divSelector, value) {
+  const divElement = adFormElement.querySelector(divSelector);
+  const imgElement = divElement.querySelector('img');
+  URL.revokeObjectURL(imgElement.src);
+  imgElement.src = value;
+  imgElement.width = 40;
+  imgElement.height = 44;
+  divElement.style = '';
+}
+
+const clearAdFormDivElement = function (selector) {
+  const divElement = adFormElement.querySelector(selector);
+  divElement.innerHTML = '';
+}
+
 const resetAdForm = function () {
-  adForm.reset();
+  adFormElement.reset();
 }
 
 const resetMapFiltersForm = function () {
-  mapFiltersForm.reset();
+  mapFiltersFormElement.reset();
 }
+
+const isEscPressed = (evt) => {
+  return evt.key === 'Escape';
+};
 
 const showSuccessMessage = function () {
   const successTepmplate = document.querySelector('#success').content;
-  const successDiv = successTepmplate.querySelector('div');
-  const successElement = successDiv.cloneNode(true);
+  const successDivElement = successTepmplate.querySelector('div');
+  const successElement = successDivElement.cloneNode(true);
   const mainElement = document.querySelector('main');
   mainElement.append(successElement);
 
@@ -123,7 +142,7 @@ const showSuccessMessage = function () {
     window.removeEventListener('click', onWindowClick);
   };
   const onWindowKeyDown = (evt) => {
-    if (evt.key === 'Escape') {
+    if (isEscPressed(evt)) {
       successElement.classList.add('hidden');
       window.removeEventListener('keydown', onWindowKeyDown);
     }
@@ -135,10 +154,10 @@ const showSuccessMessage = function () {
 
 const showErrorMessage = function () {
   const errorTepmplate = document.querySelector('#error').content;
-  const errorDiv = errorTepmplate.querySelector('div');
-  const errorButton = errorDiv.querySelector('.error__button');
+  const errorDivElement = errorTepmplate.querySelector('div');
+  const errorButtonElement = errorDivElement.querySelector('.error__button');
 
-  const errorElement = errorDiv.cloneNode(true);
+  const errorElement = errorDivElement.cloneNode(true);
   const mainElement = document.querySelector('main');
   mainElement.append(errorElement);
 
@@ -147,19 +166,19 @@ const showErrorMessage = function () {
     window.removeEventListener('click', onWindowClick)
   }
   const onWindowKeyDown = (evt) => {
-    if (evt.key === 'Escape') {
+    if (isEscPressed(evt)) {
       errorElement.classList.add('hidden');
       window.removeEventListener('keydown', onWindowKeyDown);
     }
   }
   const onButtonClick = () => {
     errorElement.classList.add('hidden');
-    errorButton.removeEventListener('click', onButtonClick);
+    errorButtonElement.removeEventListener('click', onButtonClick);
   };
 
   window.addEventListener('click', onWindowClick);
   window.addEventListener('keydown', onWindowKeyDown);
-  errorButton.addEventListener('click', onButtonClick)
+  errorButtonElement.addEventListener('click', onButtonClick)
 }
 
 const addChangeListeners = function () {
@@ -184,21 +203,20 @@ const addChangeListeners = function () {
 }
 
 const setPageToState = function (state) {
-  const fieldsets = adForm.querySelectorAll('fieldset');
-  const filtersFormElement = document.querySelector('.map__filters');
+  const fieldsetElements = adFormElement.querySelectorAll('fieldset');
 
   if (state === 'inactive') {
-    adForm.classList.add('.ad-form--disabled');
+    adFormElement.classList.add('.ad-form--disabled');
   }
   if (state === 'active') {
-    adForm.classList.remove('.ad-form--disabled');
+    adFormElement.classList.remove('.ad-form--disabled');
   }
 
-  fieldsets.forEach((fieldset) => {
+  fieldsetElements.forEach((fieldset) => {
     fieldset.disabled = (state === 'inactive')? true : false;
   });
 
-  const filters = filtersFormElement.children;
+  const filters = mapFiltersFormElement.children;
   for (let filter of filters) {
     filter.disabled = (state === 'inactive')? true : false;
   }
@@ -215,44 +233,44 @@ const setAddressToDisabled = function (disabled) {
 }
 
 const setValidation = function (title, price, [roomNumber, capacity]) {
-  const titleInput = document.querySelector(title);
-  titleInput.addEventListener('input', () => {
-    if (titleInput.value.length < OFFER_TITLE_MIN_LENGTH) {
-      const count = OFFER_TITLE_MIN_LENGTH - titleInput.value.length;
-      titleInput.setCustomValidity('Еще ' + count + ' симв.');
+  const titleElement = document.querySelector(title);
+  titleElement.addEventListener('input', () => {
+    if (titleElement.value.length < OFFER_TITLE_MIN_LENGTH) {
+      const count = OFFER_TITLE_MIN_LENGTH - titleElement.value.length;
+      titleElement.setCustomValidity('Еще ' + count + ' симв.');
     }
-    else if (titleInput.value.length > OFFER_TITLE_MAX_LENGTH) {
-      const count = titleInput.value.length - OFFER_TITLE_MAX_LENGTH;
-      titleInput.setCustomValidity('Превышение максимальной длины на ' + count + ' симв.');
+    else if (titleElement.value.length > OFFER_TITLE_MAX_LENGTH) {
+      const count = titleElement.value.length - OFFER_TITLE_MAX_LENGTH;
+      titleElement.setCustomValidity('Превышение максимальной длины на ' + count + ' симв.');
     }
     else {
-      titleInput.setCustomValidity('');
+      titleElement.setCustomValidity('');
     }
-    titleInput.reportValidity();
+    titleElement.reportValidity();
   });
 
-  const priceInput = document.querySelector(price);
-  priceInput.addEventListener('input', () => {
-    if (Number(priceInput.value) < priceInput.min) {
-      priceInput.setCustomValidity('Значение должно быть больше или равно ' + priceInput.min);
+  const priceElement = document.querySelector(price);
+  priceElement.addEventListener('input', () => {
+    if (Number(priceElement.value) < priceElement.min) {
+      priceElement.setCustomValidity('Значение должно быть больше или равно ' + priceElement.min);
     }
-    else if (Number(priceInput.value) > OFFER_MAX_PRICE) {
-      priceInput.setCustomValidity('Максимальное значение — ' + OFFER_MAX_PRICE);
+    else if (Number(priceElement.value) > OFFER_MAX_PRICE) {
+      priceElement.setCustomValidity('Максимальное значение — ' + OFFER_MAX_PRICE);
     }
     else {
-      priceInput.setCustomValidity('');
+      priceElement.setCustomValidity('');
     }
-    priceInput.reportValidity();
+    priceElement.reportValidity();
   });
   
-  const roomNumberSelect = document.querySelector(roomNumber);
-  const capacitySelect = document.querySelector(capacity);
-  roomNumberSelect.addEventListener('change', () => {
-    const value = +roomNumberSelect.value;
-    capacitySelect.value = value;
+  const roomNumberElement = document.querySelector(roomNumber);
+  const capacityElement = document.querySelector(capacity);
+  roomNumberElement.addEventListener('change', () => {
+    const value = +roomNumberElement.value;
+    capacityElement.value = value;
 
     if (value === 100) {
-      for (let option of capacitySelect.options) {
+      for (let option of capacityElement.options) {
         option.disabled = false;
         if (+option.value !== value) {
           option.disabled = true;
@@ -260,7 +278,7 @@ const setValidation = function (title, price, [roomNumber, capacity]) {
       }
     }
     else {
-      for (let option of capacitySelect.options) {
+      for (let option of capacityElement.options) {
         option.disabled = false; 
         if (+option.value > value) {
           option.disabled = true;
@@ -271,14 +289,53 @@ const setValidation = function (title, price, [roomNumber, capacity]) {
 }
 
 const setClearButtonClick = function (callback) {
-  const clearButton = document.querySelector('.ad-form__reset');
-  clearButton.addEventListener('click', (evt) => {
+  const clearButtonElement = document.querySelector('.ad-form__reset');
+  clearButtonElement.addEventListener('click', (evt) => {
     evt.preventDefault();
     callback();
   })
 }
 
+const setFileChangeListener = function (type, [fileSelector, imageDivSelector]) {
+  const fileElement = adFormElement.querySelector(fileSelector);
+  const divElement = adFormElement.querySelector(imageDivSelector);
+  let previewImgElement;
+
+  if (type === 'avatar') {
+    previewImgElement = divElement.querySelector('img');
+  }
+  else if (type === 'housing-photo') {
+    previewImgElement = document.createElement('img');
+    previewImgElement.width = 70;
+    previewImgElement.height = 70;  
+  }
+
+  fileElement.addEventListener('change', (evt) => {
+    const files = evt.target.files;
+    if (files.length < 1) {
+      return;
+    }
+    previewImgElement.src = URL.createObjectURL(files[0]);
+    
+    if (type === 'avatar') {
+      divElement.style = 'padding: 0px';
+      previewImgElement.width = 70;
+      previewImgElement.height = 70;
+    }
+    else if (type === 'housing-photo') {
+      divElement.appendChild(previewImgElement);
+    }
+  });
+
+  previewImgElement.addEventListener('load', () => {
+    URL.revokeObjectURL(previewImgElement.src);
+  });
+}
+
 export {
+  resetAdFormDivImgElement,
+  clearAdFormDivElement,
+  setFileChangeListener,
   addChangeListeners, 
   setPageToState, 
   setAddress, 

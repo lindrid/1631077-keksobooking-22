@@ -1,13 +1,13 @@
 const ERROR_DISPLAY_DURATION = 10000;
 
 const showAlert = function (message, selector) {
-  const div = document.querySelector(selector);
-  div.innerHTML = message;
-  div.style = 'text-align: center; background-color: red; color: white; font-size: 18px;' +
+  const divElement = document.querySelector(selector);
+  divElement.innerHTML = message;
+  divElement.style = 'text-align: center; background-color: red; color: white; font-size: 18px;' +
     'padding-top: 5px; padding-bottom: 5px;';
   setTimeout(() => {
-    div.innerHTML = '';
-    div.style = '';
+    divElement.innerHTML = '';
+    divElement.style = '';
   }, ERROR_DISPLAY_DURATION);
 }
 
