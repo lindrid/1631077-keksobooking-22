@@ -173,7 +173,7 @@ const showErrorMessage = function () {
 }
 
 const addChangeListeners = function ([typeSelector, priceSelector, 
-timeinSelector, timeoutSelector]) {
+  timeinSelector, timeoutSelector]) {
   const typeElement = document.querySelector(typeSelector);
   const priceElement = document.querySelector(priceSelector);
   const timeinElement = document.querySelector(timeinSelector);
