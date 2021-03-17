@@ -29,17 +29,17 @@ const getHousingMinPrice = function (type) {
   return housingsAttributes[type].minPrice;
 }
 
-const getRoomsString = function (rooms) {
-  let roomsStr = (rooms === 1)? 'комната' : 'комнат';
-  if (rooms >= 2 && rooms <= 4) {
+const getRoomsString = function (roomsNumber) {
+  let roomsStr = (roomsNumber === 1)? 'комната' : 'комнат';
+  if (roomsNumber >= 2 && roomsNumber <= 4) {
     roomsStr = 'комнаты';
   }
-  return rooms + ' ' + roomsStr;
+  return roomsNumber + ' ' + roomsStr;
 }
 
-const getGuestsString = function (guests) {
-  let guestsStr = (guests === 1)? 'гостя' : 'гостей';
-  return guests + ' ' + guestsStr;
+const getGuestsString = function (guestsNumber) {
+  let guestsStr = (guestsNumber === 1)? 'гостя' : 'гостей';
+  return guestsNumber + ' ' + guestsStr;
 }
 
 const createElements = function (objects) {

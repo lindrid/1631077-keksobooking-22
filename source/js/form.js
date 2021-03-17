@@ -11,86 +11,17 @@ import {sendData} from './server-data.js';
 const adFormElement = document.querySelector('.ad-form');
 const mapFiltersFormElement = document.querySelector('.map__filters');
 
-const setupFilterForm = function (objects, map) {
+const getFiltersFormData = function () {
+  return new FormData(mapFiltersFormElement);
+}
+
+const setupFilterForm = function (map) {
   mapFiltersFormElement.addEventListener('change', _.debounce(() => {
-    const formData = new FormData(mapFiltersFormElement);
-    let controls = [];
-
-    for (let pair of formData.entries()) {
-      controls.push({
-        name: pair[0],
-        value: pair[1],
-      });
-    }
-
-    objects.forEach((object) => {
-      const marker = map.getMarkerBy(object);
-
-      if (!marker) {
-        return;
-      }
-      
-      if (marker.isPopupOpen()) {
-        marker.closePopup();
-      }
-
-      const offer = object.offer;
-      const offerValues = {
-        'housing-type': offer.type.toString(), 
-        'housing-price': offer.price.toString(), 
-        'housing-rooms': offer.rooms.toString(), 
-        'housing-guests': offer.guests.toString(),
-      };
-      let allValuesAreEqual = true;
-      
-      for (let control of controls) {
-        if (['housing-type', 'housing-rooms', 'housing-guests'].includes(control.name)) {
-          if (control.value !== 'any' && control.value !== offerValues[control.name]) {
-            allValuesAreEqual = false;
-            break;
-          }
-        }
-        else if (control.name === 'housing-price') {
-          switch (control.value) {
-            case 'low':
-              if (offerValues[control.name] > 10000) {
-                allValuesAreEqual = false;
-              }
-              break;
-            case 'middle':
-              if (offerValues[control.name] <= 10000 || offerValues[control.name] > 50000) {
-                allValuesAreEqual = false;
-              }
-              break;
-            case 'high':
-              if (offerValues[control.name] <= 50000) {
-                allValuesAreEqual = false;
-              }
-              break;
-          }
-          if (!allValuesAreEqual) {
-            break;
-          }
-        }
-        else {
-          if (!offer.features.includes(control.value)) {
-            allValuesAreEqual = false;
-            break;
-          }
-        }
-      }
-
-      if (allValuesAreEqual) {
-        map.showMarker(marker);
-      }
-      else {
-        map.hideMarker(marker);
-      }
-    });
+    map.redrawMarkers(getFiltersFormData());
   }, 500));
 }
 
-const setFormSubmit = function (onSuccess, onFail) {
+const setAdFormSubmit = function (onSuccess, onFail) {
   adFormElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
     setAddressToDisabled(false);
@@ -137,14 +68,19 @@ const showSuccessMessage = function () {
   const mainElement = document.querySelector('main');
   mainElement.append(successElement);
 
+  const removeEventsListeners = () => {
+    window.removeEventListener('click', onWindowClick);
+    window.removeEventListener('keydown', onWindowKeyDown);
+  }
+
   const onWindowClick = () => {
     successElement.classList.add('hidden');
-    window.removeEventListener('click', onWindowClick);
+    removeEventsListeners();
   };
   const onWindowKeyDown = (evt) => {
     if (isEscPressed(evt)) {
       successElement.classList.add('hidden');
-      window.removeEventListener('keydown', onWindowKeyDown);
+      removeEventsListeners();
     }
   }
   
@@ -161,19 +97,25 @@ const showErrorMessage = function () {
   const mainElement = document.querySelector('main');
   mainElement.append(errorElement);
 
+  const removeEventsListeners = () => {
+    window.removeEventListener('click', onWindowClick)
+    window.removeEventListener('keydown', onWindowKeyDown);
+    errorButtonElement.removeEventListener('click', onButtonClick);
+  }
+
   const onWindowClick = () => {
     errorElement.classList.add('hidden');
-    window.removeEventListener('click', onWindowClick)
+    removeEventsListeners();
   }
   const onWindowKeyDown = (evt) => {
     if (isEscPressed(evt)) {
       errorElement.classList.add('hidden');
-      window.removeEventListener('keydown', onWindowKeyDown);
+      removeEventsListeners();
     }
   }
   const onButtonClick = () => {
     errorElement.classList.add('hidden');
-    errorButtonElement.removeEventListener('click', onButtonClick);
+    removeEventsListeners();
   };
 
   window.addEventListener('click', onWindowClick);
@@ -181,11 +123,12 @@ const showErrorMessage = function () {
   errorButtonElement.addEventListener('click', onButtonClick)
 }
 
-const addChangeListeners = function () {
-  const typeElement = document.querySelector('#type');
-  const priceElement = document.querySelector('#price');
-  const timeinElement = document.querySelector('#timein');
-  const timeoutElement = document.querySelector('#timeout');
+const addAdFormChangeListeners = function ([typeSelector, priceSelector, 
+  timeinSelector, timeoutSelector]) {
+  const typeElement = adFormElement.querySelector(typeSelector);
+  const priceElement = adFormElement.querySelector(priceSelector);
+  const timeinElement = adFormElement.querySelector(timeinSelector);
+  const timeoutElement = adFormElement.querySelector(timeoutSelector);
 
   typeElement.addEventListener('change', (evt) => {
     const minPrice = getHousingMinPrice(evt.target.value);
@@ -222,18 +165,18 @@ const setPageToState = function (state) {
   }
 }
 
+const addressElement = adFormElement.querySelector('#address');
+
 const setAddress = function (latitude, longitude) {
-  const addressElement = document.querySelector('#address');
   addressElement.value = `${latitude}, ${longitude}`;
 }
 
 const setAddressToDisabled = function (disabled) {
-  const addressElement = document.querySelector('#address');
   addressElement.disabled = disabled;
 }
 
-const setValidation = function (title, price, [roomNumber, capacity]) {
-  const titleElement = document.querySelector(title);
+const setAdFormValidation = function (title, price, [roomsNumber, capacity]) {
+  const titleElement = adFormElement.querySelector(title);
   titleElement.addEventListener('input', () => {
     if (titleElement.value.length < OFFER_TITLE_MIN_LENGTH) {
       const count = OFFER_TITLE_MIN_LENGTH - titleElement.value.length;
@@ -249,7 +192,7 @@ const setValidation = function (title, price, [roomNumber, capacity]) {
     titleElement.reportValidity();
   });
 
-  const priceElement = document.querySelector(price);
+  const priceElement = adFormElement.querySelector(price);
   priceElement.addEventListener('input', () => {
     if (Number(priceElement.value) < priceElement.min) {
       priceElement.setCustomValidity('Значение должно быть больше или равно ' + priceElement.min);
@@ -263,10 +206,10 @@ const setValidation = function (title, price, [roomNumber, capacity]) {
     priceElement.reportValidity();
   });
   
-  const roomNumberElement = document.querySelector(roomNumber);
-  const capacityElement = document.querySelector(capacity);
-  roomNumberElement.addEventListener('change', () => {
-    const value = +roomNumberElement.value;
+  const roomsNumberElement = adFormElement.querySelector(roomsNumber);
+  const capacityElement = adFormElement.querySelector(capacity);
+  roomsNumberElement.addEventListener('change', () => {
+    const value = +roomsNumberElement.value;
     capacityElement.value = value;
 
     if (value === 100) {
@@ -289,7 +232,7 @@ const setValidation = function (title, price, [roomNumber, capacity]) {
 }
 
 const setClearButtonClick = function (callback) {
-  const clearButtonElement = document.querySelector('.ad-form__reset');
+  const clearButtonElement = adFormElement.querySelector('.ad-form__reset');
   clearButtonElement.addEventListener('click', (evt) => {
     evt.preventDefault();
     callback();
@@ -333,14 +276,15 @@ const setFileChangeListener = function (type, [fileSelector, imageDivSelector]) 
 }
 
 export {
+  getFiltersFormData,
   resetAdFormDivImgElement,
   clearAdFormDivElement,
   setFileChangeListener,
-  addChangeListeners, 
+  addAdFormChangeListeners, 
   setPageToState, 
   setAddress, 
-  setValidation, 
-  setFormSubmit, 
+  setAdFormValidation, 
+  setAdFormSubmit, 
   setAddressToDisabled,
   resetAdForm,
   resetMapFiltersForm,
