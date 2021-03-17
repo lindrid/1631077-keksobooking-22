@@ -106,7 +106,7 @@ const setFormSubmit = function (onSuccess, onFail) {
 const resetAdFormDivImgElement = function (divSelector, value) {
   const divElement = adFormElement.querySelector(divSelector);
   const imgElement = divElement.querySelector('img');
-  URL.revokeObjectURL(imgElement);
+  URL.revokeObjectURL(imgElement.src);
   imgElement.src = value;
   imgElement.width = 40;
   imgElement.height = 44;
