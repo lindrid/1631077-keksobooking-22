@@ -103,6 +103,21 @@ const setFormSubmit = function (onSuccess, onFail) {
   });
 }
 
+const resetAdFormDivImgElement = function (divSelector, value) {
+  const divElement = adFormElement.querySelector(divSelector);
+  const imgElement = divElement.querySelector('img');
+  URL.revokeObjectURL(imgElement);
+  imgElement.src = value;
+  imgElement.width = 40;
+  imgElement.height = 44;
+  divElement.style = '';
+}
+
+const clearAdFormDivElement = function (selector) {
+  const divElement = adFormElement.querySelector(selector);
+  divElement.innerHTML = '';
+}
+
 const resetAdForm = function () {
   adFormElement.reset();
 }
@@ -318,6 +333,8 @@ const setFileChangeListener = function (type, [fileSelector, imageDivSelector]) 
 }
 
 export {
+  resetAdFormDivImgElement,
+  clearAdFormDivElement,
   setFileChangeListener,
   addChangeListeners, 
   setPageToState, 

@@ -13,7 +13,9 @@ import {
   showErrorMessage,
   setClearButtonClick,
   setupFilterForm,
-  setFileChangeListener
+  setFileChangeListener,
+  resetAdFormDivImgElement,
+  clearAdFormDivElement
 } from './form.js';
 import {Map} from './map.js';
 
@@ -58,6 +60,8 @@ map.setView(Tokyo, MAP_SCALE);
 
 const doOnSuccessSendForm = () => {
   resetAdForm();
+  resetAdFormDivImgElement('.ad-form-header__preview', 'img/muffin-grey.svg');
+  clearAdFormDivElement('.ad-form__photo');
   resetMapFiltersForm();
   map.moveMainMarkerTo(Tokyo);
   setFormAddressToDisabled(true);
