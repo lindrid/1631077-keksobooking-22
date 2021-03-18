@@ -61,6 +61,14 @@ class Map {
   }
 
   addMarkers (objects, popups) {
+    if (!this.objects) {
+      this.objects = objects;
+    }
+    else {
+      // merge array without duplicates
+      this.objects = [...new Set([...this.objects, ...objects])];
+    }
+  
     objects.forEach((object, index) => {
       const location = object.location;
       const marker = L.marker(
@@ -97,6 +105,83 @@ class Map {
 
   showMarker (marker) {
     marker.addTo(this.map);
+  }
+
+  redrawMarkers(formData) {
+    let controls = [];
+  
+    for (let pair of formData.entries()) {
+      controls.push({
+        name: pair[0],
+        value: pair[1],
+      });
+    }
+  
+    for (let i = 0; i < this.objects.length; i++) {
+      const object = this.objects[i];
+      const marker = this.getMarkerBy(object);
+  
+      if (!marker) {
+        return;
+      }
+      
+      if (marker.isPopupOpen()) {
+        marker.closePopup();
+      }
+  
+      const offer = object.offer;
+      const offerValues = {
+        'housing-type': offer.type.toString(), 
+        'housing-price': offer.price.toString(), 
+        'housing-rooms': offer.rooms.toString(), 
+        'housing-guests': offer.guests.toString(),
+      };
+      let isOfferEqualToControl = true;
+      
+      for (let control of controls) {
+        if (['housing-type', 'housing-rooms', 'housing-guests'].includes(control.name)) {
+          if (control.value !== 'any' && control.value !== offerValues[control.name]) {
+            isOfferEqualToControl = false;
+            break;
+          }
+        }
+        else if (control.name === 'housing-price') {
+          switch (control.value) {
+            case 'low':
+              if (offerValues[control.name] > 10000) {
+                isOfferEqualToControl = false;
+              }
+              break;
+            case 'middle':
+              if (offerValues[control.name] <= 10000 || offerValues[control.name] > 50000) {
+                isOfferEqualToControl = false;
+              }
+              break;
+            case 'high':
+              if (offerValues[control.name] <= 50000) {
+                isOfferEqualToControl = false;
+              }
+              break;
+          }
+          if (!isOfferEqualToControl) {
+            break;
+          }
+        }
+        else {
+          if (!offer.features.includes(control.value)) {
+            isOfferEqualToControl = false;
+            break;
+          }
+        }
+      }
+  
+      if (isOfferEqualToControl) {
+        this.showMarker(marker);
+      }
+      else {
+        this.hideMarker(marker);
+      }
+    }
   }
 }
 

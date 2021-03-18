@@ -11,82 +11,13 @@ import {sendData} from './server-data.js';
 const adFormElement = document.querySelector('.ad-form');
 const mapFiltersFormElement = document.querySelector('.map__filters');
 
-const setupFilterForm = function (objects, map) {
+const getFiltersFormData = function () {
+  return new FormData(mapFiltersFormElement);
+}
+
+const setupFilterForm = function (map) {
   mapFiltersFormElement.addEventListener('change', _.debounce(() => {
-    const formData = new FormData(mapFiltersFormElement);
-    let controls = [];
-
-    for (let pair of formData.entries()) {
-      controls.push({
-        name: pair[0],
-        value: pair[1],
-      });
-    }
-
-    objects.forEach((object) => {
-      const marker = map.getMarkerBy(object);
-
-      if (!marker) {
-        return;
-      }
-      
-      if (marker.isPopupOpen()) {
-        marker.closePopup();
-      }
-
-      const offer = object.offer;
-      const offerValues = {
-        'housing-type': offer.type.toString(), 
-        'housing-price': offer.price.toString(), 
-        'housing-rooms': offer.rooms.toString(), 
-        'housing-guests': offer.guests.toString(),
-      };
-      let isOfferEqualToControl = true;
-      
-      for (let control of controls) {
-        if (['housing-type', 'housing-rooms', 'housing-guests'].includes(control.name)) {
-          if (control.value !== 'any' && control.value !== offerValues[control.name]) {
-            isOfferEqualToControl = false;
-            break;
-          }
-        }
-        else if (control.name === 'housing-price') {
-          switch (control.value) {
-            case 'low':
-              if (offerValues[control.name] > 10000) {
-                isOfferEqualToControl = false;
-              }
-              break;
-            case 'middle':
-              if (offerValues[control.name] <= 10000 || offerValues[control.name] > 50000) {
-                isOfferEqualToControl = false;
-              }
-              break;
-            case 'high':
-              if (offerValues[control.name] <= 50000) {
-                isOfferEqualToControl = false;
-              }
-              break;
-          }
-          if (!isOfferEqualToControl) {
-            break;
-          }
-        }
-        else {
-          if (!offer.features.includes(control.value)) {
-            isOfferEqualToControl = false;
-            break;
-          }
-        }
-      }
-
-      if (isOfferEqualToControl) {
-        map.showMarker(marker);
-      }
-      else {
-        map.hideMarker(marker);
-      }
-    });
+    map.redrawMarkers(getFiltersFormData());
   }, 500));
 }
 
@@ -169,7 +100,7 @@ const showErrorMessage = function () {
   const removeEventsListeners = () => {
     window.removeEventListener('click', onWindowClick)
     window.removeEventListener('keydown', onWindowKeyDown);
-    errorButton.removeEventListener('click', onButtonClick);
+    errorButtonElement.removeEventListener('click', onButtonClick);
   }
 
   const onWindowClick = () => {
@@ -345,6 +276,7 @@ const setFileChangeListener = function (type, [fileSelector, imageDivSelector]) 
 }
 
 export {
+  getFiltersFormData,
   resetAdFormDivImgElement,
   clearAdFormDivElement,
   setFileChangeListener,

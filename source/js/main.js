@@ -1,11 +1,12 @@
 import {getData as getServerData, showAlert} from './server-data.js';
 import {createElements as createOffersElements} from './offer.js';
 import {
+  getFiltersFormData,
   addAdFormChangeListeners, 
   setPageToState,
   setAddress as setAdFormAddress,
   setAdFormValidation,
-  setFormSubmit,
+  setAdFormSubmit,
   setAddressToDisabled as setAdFormAddressToDisabled,
   resetAdForm,
   resetMapFiltersForm,
@@ -46,7 +47,7 @@ let doOnSuccessGetData = (objects) => {
   addAdFormChangeListeners(['#type', '#price', '#timein', '#timeout']);
   setAdFormValidation('#title', '#price', ['#room_number', '#capacity']);
   
-  setupFilterForm(objects, map);
+  setupFilterForm(map);
 };
 
 let doOnFailGetData = (message) => {
@@ -65,6 +66,7 @@ const doOnSuccessFormSubmit = () => {
   resetAdFormDivImgElement('.ad-form-header__preview', 'img/muffin-grey.svg');
   clearAdFormDivElement('.ad-form__photo');
   resetMapFiltersForm();
+  map.redrawMarkers(getFiltersFormData());
   map.moveMainMarkerTo(Tokyo);
   setAdFormAddressToDisabled(true);
   showSuccessMessage();
@@ -72,7 +74,7 @@ const doOnSuccessFormSubmit = () => {
 
 const doOnFailFormSubmit = () => showErrorMessage();
 
-setFormSubmit(doOnSuccessFormSubmit, doOnFailFormSubmit);
+setAdFormSubmit(doOnSuccessFormSubmit, doOnFailFormSubmit);
 setClearButtonClick(doOnSuccessFormSubmit);
 
 setFileChangeListener('avatar', ['#avatar', '.ad-form-header__preview']);
