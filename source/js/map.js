@@ -1,6 +1,6 @@
 /* global L */
 
-import {setAddress as setFormAddress} from './form.js';
+import {setAddress as setAdFormAddress} from './form.js';
 
 class Map {
   constructor (elementId) {
@@ -49,7 +49,7 @@ class Map {
       },
     ).on('moveend', (evt) => {
       const {lat, lng} = evt.target.getLatLng();
-      setFormAddress(lat.toFixed(5), lng.toFixed(5));
+      setAdFormAddress(lat.toFixed(5), lng.toFixed(5));
     });
     
     this.marker.addTo(this.map);
@@ -57,7 +57,7 @@ class Map {
 
   moveMainMarkerTo(point) {
     this.marker.setLatLng(L.latLng(point.LATITUDE, point.LONGITUDE));
-    setFormAddress(point.LATITUDE, point.LONGITUDE);
+    setAdFormAddress(point.LATITUDE, point.LONGITUDE);
   }
 
   addMarkers (objects, popups) {

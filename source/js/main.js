@@ -1,12 +1,12 @@
 import {getData as getServerData, showAlert} from './server-data.js';
 import {createElements as createOffersElements} from './offer.js';
 import {
-  addChangeListeners as addFormChangeListeners, 
+  addAdFormChangeListeners, 
   setPageToState,
-  setAddress as setFormAddress,
-  setValidation as setFormValidation,
+  setAddress as setAdFormAddress,
+  setAdFormValidation,
   setFormSubmit,
-  setAddressToDisabled as setFormAddressToDisabled,
+  setAddressToDisabled as setAdFormAddressToDisabled,
   resetAdForm,
   resetMapFiltersForm,
   showSuccessMessage,
@@ -27,7 +27,6 @@ const Tokyo = {
 }
 
 setPageToState('inactive');
-addFormChangeListeners();
 
 let doOnSuccessGetData = (objects) => {
   objects = objects.slice(0, OFFERS_NUMBER);
@@ -39,11 +38,14 @@ let doOnSuccessGetData = (objects) => {
   }
 
   map.addMainMarker(Tokyo);
-  setFormAddress(Tokyo.LATITUDE, Tokyo.LONGITUDE);
-  setFormAddressToDisabled(true);
+  setAdFormAddress(Tokyo.LATITUDE, Tokyo.LONGITUDE);
+  setAdFormAddressToDisabled(true);
+  
   map.addMarkers(objects, popups);
 
-  setFormValidation('#title', '#price', ['#room_number', '#capacity']);
+  addAdFormChangeListeners(['#type', '#price', '#timein', '#timeout']);
+  setAdFormValidation('#title', '#price', ['#room_number', '#capacity']);
+  
   setupFilterForm(objects, map);
 };
 
@@ -58,20 +60,20 @@ map.onLoad(() => {
 });
 map.setView(Tokyo, MAP_SCALE);
 
-const doOnSuccessSendForm = () => {
+const doOnSuccessFormSubmit = () => {
   resetAdForm();
   resetAdFormDivImgElement('.ad-form-header__preview', 'img/muffin-grey.svg');
   clearAdFormDivElement('.ad-form__photo');
   resetMapFiltersForm();
   map.moveMainMarkerTo(Tokyo);
-  setFormAddressToDisabled(true);
+  setAdFormAddressToDisabled(true);
   showSuccessMessage();
 };
 
-const doOnFailSendForm = () => showErrorMessage();
+const doOnFailFormSubmit = () => showErrorMessage();
 
-setFormSubmit(doOnSuccessSendForm, doOnFailSendForm);
-setClearButtonClick(doOnSuccessSendForm);
+setFormSubmit(doOnSuccessFormSubmit, doOnFailFormSubmit);
+setClearButtonClick(doOnSuccessFormSubmit);
 
 setFileChangeListener('avatar', ['#avatar', '.ad-form-header__preview']);
 setFileChangeListener('housing-photo', ['#images', '.ad-form__photo']);
