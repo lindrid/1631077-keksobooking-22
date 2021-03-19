@@ -111,6 +111,10 @@ const resetMapFiltersForm = function () {
   mapFiltersFormElement.reset();
 }
 
+const isEscPressed = (evt) => {
+  return evt.key === 'Escape';
+};
+
 const showSuccessMessage = function () {
   const successTepmplate = document.querySelector('#success').content;
   const successDivElement = successTepmplate.querySelector('div');
@@ -123,7 +127,7 @@ const showSuccessMessage = function () {
     window.removeEventListener('click', onWindowClick);
   };
   const onWindowKeyDown = (evt) => {
-    if (evt.key === 'Escape') {
+    if (isEscPressed(evt)) {
       successElement.classList.add('hidden');
       window.removeEventListener('keydown', onWindowKeyDown);
     }
@@ -147,7 +151,7 @@ const showErrorMessage = function () {
     window.removeEventListener('click', onWindowClick)
   }
   const onWindowKeyDown = (evt) => {
-    if (evt.key === 'Escape') {
+    if (isEscPressed(evt)) {
       errorElement.classList.add('hidden');
       window.removeEventListener('keydown', onWindowKeyDown);
     }
