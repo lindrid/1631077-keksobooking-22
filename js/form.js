@@ -278,7 +278,44 @@ const setClearButtonClick = function (callback) {
   })
 }
 
+const setFileChangeListener = function (type, [fileSelector, imageDivSelector]) {
+  const fileElement = adForm.querySelector(fileSelector);
+  const div = adForm.querySelector(imageDivSelector);
+  let previewImg;
+
+  if (type === 'avatar') {
+    previewImg = div.querySelector('img');
+  }
+  else if (type === 'housing-photo') {
+    previewImg = document.createElement('img');
+    previewImg.width = 70;
+    previewImg.height = 70;  
+  }
+
+  fileElement.addEventListener('change', (evt) => {
+    const files = evt.target.files;
+    if (files.length < 1) {
+      return;
+    }
+    previewImg.src = URL.createObjectURL(files[0]);
+    
+    if (type === 'avatar') {
+      div.style = 'padding: 0px';
+      previewImg.width = 70;
+      previewImg.height = 70;
+    }
+    else if (type === 'housing-photo') {
+      div.appendChild(previewImg);
+    }
+  });
+
+  previewImg.addEventListener('load', () => {
+    URL.revokeObjectURL(previewImg.src);
+  });
+}
+
 export {
+  setFileChangeListener,
   addChangeListeners, 
   setPageToState, 
   setAddress, 

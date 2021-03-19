@@ -12,7 +12,8 @@ import {
   showSuccessMessage,
   showErrorMessage,
   setClearButtonClick,
-  setupFilterForm
+  setupFilterForm,
+  setFileChangeListener
 } from './form.js';
 import {Map} from './map.js';
 
@@ -67,3 +68,6 @@ const doOnFailSendForm = () => showErrorMessage();
 
 setFormSubmit(doOnSuccessSendForm, doOnFailSendForm);
 setClearButtonClick(doOnSuccessSendForm);
+
+setFileChangeListener('avatar', ['#avatar', '.ad-form-header__preview']);
+setFileChangeListener('housing-photo', ['#images', '.ad-form__photo']);
