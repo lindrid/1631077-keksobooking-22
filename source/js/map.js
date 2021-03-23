@@ -1,27 +1,36 @@
 /* global L */
 
+import {getRandomIntegers} from './util.js';
 import {setAddress as setAdFormAddress} from './form.js';
+import {isOfferMatchedToFilter} from './offer.js';
+
+const MAIN_PIN_ICON_URL = './img/main-pin.svg';
+const PIN_ICON_URL = './img/pin.svg';
+const ICON_X_SIZE = 52;
+const ICON_Y_SIZE = 52;
+const LAYER_URL_TEMPLATE = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'; 
+const LAYER_COPYRIGHT = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
 class Map {
   constructor (elementId) {
     this.markers = new Array(0);
     this.mainPinIcon = L.icon({
-      iconUrl: './img/main-pin.svg',
-      iconSize: [52, 52],
-      iconAnchor: [26, 52],
+      iconUrl: MAIN_PIN_ICON_URL,
+      iconSize: [ICON_X_SIZE, ICON_Y_SIZE],
+      iconAnchor: [ICON_X_SIZE / 2, ICON_Y_SIZE],
     });
     this.pinIcon = L.icon({
-      iconUrl: './img/pin.svg',
-      iconSize: [52, 52],
-      iconAnchor: [26, 52],
+      iconUrl: PIN_ICON_URL,
+      iconSize: [ICON_X_SIZE, ICON_Y_SIZE],
+      iconAnchor: [ICON_X_SIZE / 2, ICON_Y_SIZE],
     });
 
     this.map = L.map(elementId);
     
     L.tileLayer(
-      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      LAYER_URL_TEMPLATE,
       {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        attribution: LAYER_COPYRIGHT,
       },
     ).addTo(this.map);
   }
@@ -47,7 +56,7 @@ class Map {
         draggable: true,
         icon: this.mainPinIcon,
       },
-    ).on('moveend', (evt) => {
+    ).on('drag', (evt) => {
       const {lat, lng} = evt.target.getLatLng();
       setAdFormAddress(lat.toFixed(5), lng.toFixed(5));
     });
@@ -60,14 +69,8 @@ class Map {
     setAdFormAddress(point.LATITUDE, point.LONGITUDE);
   }
 
-  addMarkers (objects, popups) {
-    if (!this.objects) {
-      this.objects = objects;
-    }
-    else {
-      // merge array without duplicates
-      this.objects = [...new Set([...this.objects, ...objects])];
-    }
+  createMarkers (objects, popups) {
+    this.objects = objects;
   
     objects.forEach((object, index) => {
       const location = object.location;
@@ -80,13 +83,22 @@ class Map {
           icon: this.pinIcon,
         },
       );
-      marker.addTo(this.map);
       marker.bindPopup(popups.elements[index], {
         minWidth: popups.width,
         maxHeight: popups.height,
       });
       const key = `${location.lat},${location.lng}`;
       this.markers[key] = marker;
+    });
+  }
+
+  drawMarkers (quantity) {
+    this.maxMarkersToDraw = quantity;
+    const objects = this.objects.slice(0, quantity);
+    const thisMap = this;
+    objects.forEach((object) => {
+      const marker = thisMap.getMarkerBy(object);
+      marker.addTo(thisMap.map);
     });
   }
 
@@ -108,78 +120,40 @@ class Map {
   }
 
   redrawMarkers(formData) {
-    let controls = [];
+    let filterControls = [];
   
     for (let pair of formData.entries()) {
-      controls.push({
+      filterControls.push({
         name: pair[0],
         value: pair[1],
       });
     }
   
-    for (let i = 0; i < this.objects.length; i++) {
-      const object = this.objects[i];
+    let i = 1;
+    let allMarkersAreShown = false;
+    for (let object of this.objects) {
       const marker = this.getMarkerBy(object);
   
       if (!marker) {
-        return;
+        continue;
       }
       
       if (marker.isPopupOpen()) {
         marker.closePopup();
       }
+
+      this.hideMarker(marker);
   
       const offer = object.offer;
-      const offerValues = {
-        'housing-type': offer.type.toString(), 
-        'housing-price': offer.price.toString(), 
-        'housing-rooms': offer.rooms.toString(), 
-        'housing-guests': offer.guests.toString(),
-      };
-      let isOfferEqualToControl = true;
-      
-      for (let control of controls) {
-        if (['housing-type', 'housing-rooms', 'housing-guests'].includes(control.name)) {
-          if (control.value !== 'any' && control.value !== offerValues[control.name]) {
-            isOfferEqualToControl = false;
-            break;
-          }
-        }
-        else if (control.name === 'housing-price') {
-          switch (control.value) {
-            case 'low':
-              if (offerValues[control.name] > 10000) {
-                isOfferEqualToControl = false;
-              }
-              break;
-            case 'middle':
-              if (offerValues[control.name] <= 10000 || offerValues[control.name] > 50000) {
-                isOfferEqualToControl = false;
-              }
-              break;
-            case 'high':
-              if (offerValues[control.name] <= 50000) {
-                isOfferEqualToControl = false;
-              }
-              break;
-          }
-          if (!isOfferEqualToControl) {
-            break;
-          }
-        }
-        else {
-          if (!offer.features.includes(control.value)) {
-            isOfferEqualToControl = false;
-            break;
-          }
-        }
-      }
   
-      if (isOfferEqualToControl) {
-        this.showMarker(marker);
-      }
-      else {
-        this.hideMarker(marker);
+      if (isOfferMatchedToFilter(offer, filterControls)) {
+        if (!allMarkersAreShown) {
+          this.showMarker(marker);
+          if (i === this.maxMarkersToDraw) {
+            allMarkersAreShown = true;
+          }
+          i++;
+        }
       }
     }
   }

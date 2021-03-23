@@ -1,4 +1,8 @@
 const ERROR_DISPLAY_DURATION = 10000;
+const API_GET_DATA_URL = 'https://22.javascript.pages.academy/keksobooking/data';
+const API_SEND_DATA_URL = 'https://22.javascript.pages.academy/keksobooking';
+const GET_DATA_ERROR_MESSAGE = 'Не удалось получить данные от сервера. ' +
+  'Ошибка, которую вернул сервер:';
 
 const showAlert = function (message, selector) {
   const divElement = document.querySelector(selector);
@@ -11,7 +15,7 @@ const showAlert = function (message, selector) {
   }, ERROR_DISPLAY_DURATION);
 }
 
-const request = function (url, method, body) {
+const makeRequest = function (url, method, body) {
   return fetch(url, {
     method: method,
     body: body,
@@ -25,14 +29,13 @@ const request = function (url, method, body) {
 }
 
 const getData = function (onSuccess, onFail) {
-  request('https://22.javascript.pages.academy/keksobooking/data', 'GET')
+  makeRequest(API_GET_DATA_URL, 'GET')
     .then((objects) => onSuccess(objects))
-    .catch((error) => onFail('Не удалось получить данные от сервера. Ошибка, которую вернул сервер: ' + 
-      error));
+    .catch((error) => onFail(`${GET_DATA_ERROR_MESSAGE} ${error}`));
 }
 
 const sendData = function (body, onSuccess, onFail) {
-  request('https://22.javascript.pages.academy/keksobooking', 'POST', body)
+  makeRequest(API_SEND_DATA_URL, 'POST', body)
     .then(() => onSuccess())
     .catch(() => onFail());
 }

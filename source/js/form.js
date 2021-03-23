@@ -8,6 +8,14 @@ import {
 } from './offer.js';
 import {sendData} from './server-data.js';
 
+const DEBOUNCE_DELAY = 500;
+const AVATAR_IMG_WIDTH = 70;
+const AVATAR_IMG_HEIGHT = 70;
+const HOUSING_PHOTO_WIDTH = 70;
+const HOUSING_PHOTO_HEIGHT = 70;
+const INITIAL_AVATAR_IMG_WIDTH = 40;
+const INITIAL_AVATAR_IMG_HEIGHT = 44;
+
 const adFormElement = document.querySelector('.ad-form');
 const mapFiltersFormElement = document.querySelector('.map__filters');
 
@@ -18,7 +26,7 @@ const getFiltersFormData = function () {
 const setupFilterForm = function (map) {
   mapFiltersFormElement.addEventListener('change', _.debounce(() => {
     map.redrawMarkers(getFiltersFormData());
-  }, 500));
+  }, DEBOUNCE_DELAY));
 }
 
 const setAdFormSubmit = function (onSuccess, onFail) {
@@ -39,8 +47,8 @@ const resetAdFormDivImgElement = function (divSelector, value) {
   const imgElement = divElement.querySelector('img');
   URL.revokeObjectURL(imgElement.src);
   imgElement.src = value;
-  imgElement.width = 40;
-  imgElement.height = 44;
+  imgElement.width = INITIAL_AVATAR_IMG_WIDTH;
+  imgElement.height = INITIAL_AVATAR_IMG_HEIGHT;
   divElement.style = '';
 }
 
@@ -61,11 +69,12 @@ const isEscPressed = (evt) => {
   return evt.key === 'Escape';
 };
 
+const successTepmplate = document.querySelector('#success').content;
+const successDivElement = successTepmplate.querySelector('div');  
+const mainElement = document.querySelector('main');
+
 const showSuccessMessage = function () {
-  const successTepmplate = document.querySelector('#success').content;
-  const successDivElement = successTepmplate.querySelector('div');
   const successElement = successDivElement.cloneNode(true);
-  const mainElement = document.querySelector('main');
   mainElement.append(successElement);
 
   const removeEventsListeners = () => {
@@ -88,13 +97,12 @@ const showSuccessMessage = function () {
   window.addEventListener('keydown', onWindowKeyDown);
 }
 
-const showErrorMessage = function () {
-  const errorTepmplate = document.querySelector('#error').content;
-  const errorDivElement = errorTepmplate.querySelector('div');
-  const errorButtonElement = errorDivElement.querySelector('.error__button');
+const errorTepmplate = document.querySelector('#error').content;
+const errorDivElement = errorTepmplate.querySelector('div');
+const errorButtonElement = errorDivElement.querySelector('.error__button');
 
+const showErrorMessage = function () {
   const errorElement = errorDivElement.cloneNode(true);
-  const mainElement = document.querySelector('main');
   mainElement.append(errorElement);
 
   const removeEventsListeners = () => {
@@ -156,12 +164,12 @@ const setPageToState = function (state) {
   }
 
   fieldsetElements.forEach((fieldset) => {
-    fieldset.disabled = (state === 'inactive')? true : false;
+    fieldset.disabled = (state === 'inactive');
   });
 
   const filters = mapFiltersFormElement.children;
   for (let filter of filters) {
-    filter.disabled = (state === 'inactive')? true : false;
+    filter.disabled = (state === 'inactive');
   }
 }
 
@@ -175,8 +183,9 @@ const setAddressToDisabled = function (disabled) {
   addressElement.disabled = disabled;
 }
 
-const setAdFormValidation = function (title, price, [roomsNumber, capacity]) {
+const setTitleValidation = function (title) {
   const titleElement = adFormElement.querySelector(title);
+  
   titleElement.addEventListener('input', () => {
     if (titleElement.value.length < OFFER_TITLE_MIN_LENGTH) {
       const count = OFFER_TITLE_MIN_LENGTH - titleElement.value.length;
@@ -191,8 +200,11 @@ const setAdFormValidation = function (title, price, [roomsNumber, capacity]) {
     }
     titleElement.reportValidity();
   });
+}
 
+const setPriceValidation = function (price) {
   const priceElement = adFormElement.querySelector(price);
+  
   priceElement.addEventListener('input', () => {
     if (Number(priceElement.value) < priceElement.min) {
       priceElement.setCustomValidity('Значение должно быть больше или равно ' + priceElement.min);
@@ -205,53 +217,52 @@ const setAdFormValidation = function (title, price, [roomsNumber, capacity]) {
     }
     priceElement.reportValidity();
   });
-  
+}
+
+const setRoomsNumberValidation = function (roomsNumber, capacity) {
   const roomsNumberElement = adFormElement.querySelector(roomsNumber);
   const capacityElement = adFormElement.querySelector(capacity);
+  
   roomsNumberElement.addEventListener('change', () => {
     const value = +roomsNumberElement.value;
     capacityElement.value = value;
 
     if (value === 100) {
       for (let option of capacityElement.options) {
-        option.disabled = false;
-        if (+option.value !== value) {
-          option.disabled = true;
-        }
+          option.disabled = +option.value !== value;
       }
     }
     else {
       for (let option of capacityElement.options) {
-        option.disabled = false; 
-        if (+option.value > value) {
-          option.disabled = true;
-        }
+        option.disabled = +option.value > value;
       }
     }
   });
 }
 
+const setAdFormValidation = function (title, price, [roomsNumber, capacity]) {
+  setTitleValidation(title);
+  setPriceValidation(price);
+  setRoomsNumberValidation(roomsNumber, capacity);
+}
+
+const clearButtonElement = adFormElement.querySelector('.ad-form__reset');
+
 const setClearButtonClick = function (callback) {
-  const clearButtonElement = adFormElement.querySelector('.ad-form__reset');
   clearButtonElement.addEventListener('click', (evt) => {
     evt.preventDefault();
     callback();
-  })
+  });
 }
 
-const setFileChangeListener = function (type, [fileSelector, imageDivSelector]) {
+const setAvatarChangeListener = function (fileSelector, imageDivSelector) {
   const fileElement = adFormElement.querySelector(fileSelector);
   const divElement = adFormElement.querySelector(imageDivSelector);
-  let previewImgElement;
+  const previewImgElement = divElement.querySelector('img');
 
-  if (type === 'avatar') {
-    previewImgElement = divElement.querySelector('img');
-  }
-  else if (type === 'housing-photo') {
-    previewImgElement = document.createElement('img');
-    previewImgElement.width = 70;
-    previewImgElement.height = 70;  
-  }
+  previewImgElement.addEventListener('load', () => {
+    URL.revokeObjectURL(previewImgElement.src);
+  });
 
   fileElement.addEventListener('change', (evt) => {
     const files = evt.target.files;
@@ -259,19 +270,31 @@ const setFileChangeListener = function (type, [fileSelector, imageDivSelector]) 
       return;
     }
     previewImgElement.src = URL.createObjectURL(files[0]);
-    
-    if (type === 'avatar') {
-      divElement.style = 'padding: 0px';
-      previewImgElement.width = 70;
-      previewImgElement.height = 70;
-    }
-    else if (type === 'housing-photo') {
-      divElement.appendChild(previewImgElement);
-    }
+    divElement.style = 'padding: 0px';
+    previewImgElement.width = HOUSING_PHOTO_WIDTH;
+    previewImgElement.height = HOUSING_PHOTO_HEIGHT;
   });
+}
+
+const setPhotoChangeListener = function (fileSelector, imageDivSelector) {
+  const fileElement = adFormElement.querySelector(fileSelector);
+  const divElement = adFormElement.querySelector(imageDivSelector);
+  const previewImgElement = document.createElement('img');
 
   previewImgElement.addEventListener('load', () => {
     URL.revokeObjectURL(previewImgElement.src);
+  });
+
+  previewImgElement.width = AVATAR_IMG_WIDTH;
+  previewImgElement.height = AVATAR_IMG_HEIGHT;  
+
+  fileElement.addEventListener('change', (evt) => {
+    const files = evt.target.files;
+    if (files.length < 1) {
+      return;
+    }
+    previewImgElement.src = URL.createObjectURL(files[0]);
+    divElement.appendChild(previewImgElement);
   });
 }
 
@@ -279,7 +302,8 @@ export {
   getFiltersFormData,
   resetAdFormDivImgElement,
   clearAdFormDivElement,
-  setFileChangeListener,
+  setAvatarChangeListener,
+  setPhotoChangeListener,
   addAdFormChangeListeners, 
   setPageToState, 
   setAddress, 

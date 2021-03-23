@@ -69,17 +69,15 @@ const getRandomFloat = function (min, max, precision) {
   return result;
 }
 
-export {getRandomInt, getRandomFloat};
+const shuffle = function (a) {
+  var j, x, i;
+  for (i = a.length - 1; i > 0; i--) {
+      j = Math.floor(Math.random() * (i + 1));
+      x = a[i];
+      a[i] = a[j];
+      a[j] = x;
+  }
+  return a;
+}
 
-/* примеры использования
-getRandomInt(1, 10);
-
-getRandomFloat(1, 1 , 0); //1
-getRandomFloat(1, 1.5 , 0); //1
-getRandomFloat(0.1250, 0.1250, 2); //0.12
-getRandomFloat(0.1, 0.1, 4); //0.1
-getRandomFloat(1.1, 1.2 , 3); //например, 1.179
-getRandomFloat(1.125, 1.2 , 2); //например, 1.16
-getRandomFloat(1.1, 10.12345 , 1); //например, 3.8
-getRandomFloat(1.555, 6.999 , 3); //например, 2.116
-*/
+export {getRandomInt, getRandomFloat, shuffle};

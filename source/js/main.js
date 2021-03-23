@@ -1,5 +1,8 @@
+import {shuffle} from './util.js';
+import {generateObjects} from './test-data.js';
 import {getData as getServerData, showAlert} from './server-data.js';
 import {createElements as createOffersElements} from './offer.js';
+import {Map} from './map.js';
 import {
   getFiltersFormData,
   addAdFormChangeListeners, 
@@ -14,11 +17,11 @@ import {
   showErrorMessage,
   setClearButtonClick,
   setupFilterForm,
-  setFileChangeListener,
+  setAvatarChangeListener,
+  setPhotoChangeListener,
   resetAdFormDivImgElement,
   clearAdFormDivElement
 } from './form.js';
-import {Map} from './map.js';
 
 const OFFERS_NUMBER = 10;
 const MAP_SCALE = 10;
@@ -30,7 +33,9 @@ const Tokyo = {
 setPageToState('inactive');
 
 let doOnSuccessGetData = (objects) => {
-  objects = objects.slice(0, OFFERS_NUMBER);
+  const extraObjects = generateObjects(OFFERS_NUMBER);
+  objects = shuffle(objects.concat(extraObjects));
+
   const offersElements = createOffersElements(objects);  
   const popups = {
     elements: offersElements,
@@ -42,7 +47,8 @@ let doOnSuccessGetData = (objects) => {
   setAdFormAddress(Tokyo.LATITUDE, Tokyo.LONGITUDE);
   setAdFormAddressToDisabled(true);
   
-  map.addMarkers(objects, popups);
+  map.createMarkers(objects, popups);
+  map.drawMarkers(OFFERS_NUMBER);
 
   addAdFormChangeListeners(['#type', '#price', '#timein', '#timeout']);
   setAdFormValidation('#title', '#price', ['#room_number', '#capacity']);
@@ -77,5 +83,5 @@ const doOnFailFormSubmit = () => showErrorMessage();
 setAdFormSubmit(doOnSuccessFormSubmit, doOnFailFormSubmit);
 setClearButtonClick(doOnSuccessFormSubmit);
 
-setFileChangeListener('avatar', ['#avatar', '.ad-form-header__preview']);
-setFileChangeListener('housing-photo', ['#images', '.ad-form__photo']);
+setAvatarChangeListener('#avatar', '.ad-form-header__preview');
+setPhotoChangeListener('#images', '.ad-form__photo');
