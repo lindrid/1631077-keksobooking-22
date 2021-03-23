@@ -77,7 +77,7 @@ const createElements = function (objects) {
     if (offer.features.length > 0) {
       offerElement.querySelector('.popup__features').innerHTML =
         offer.features.reduce((string, item) => string + 
-          `<li class="popup__feature popup__feature--${item}"></li>`, ''
+          `<li class="popup__feature popup__feature--${item}"></li>`, '',
         );
     }
     else {
@@ -88,7 +88,7 @@ const createElements = function (objects) {
     offerElement.querySelector('.popup__photos').innerHTML =
       offer.photos.reduce((string, item) => string + 
         `<img src="${item}" class="popup__photo" width="45" ` + 
-        'height="40" alt="Фотография жилья">\n', ''
+        'height="40" alt="Фотография жилья">\n', '',
       );
 
     return offerElement;

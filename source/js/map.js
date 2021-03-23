@@ -1,6 +1,5 @@
 /* global L */
 
-import {getRandomIntegers} from './util.js';
 import {setAddress as setAdFormAddress} from './form.js';
 import {isOfferMatchedToFilter} from './offer.js';
 

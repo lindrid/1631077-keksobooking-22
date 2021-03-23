@@ -229,7 +229,7 @@ const setRoomsNumberValidation = function (roomsNumber, capacity) {
 
     if (value === 100) {
       for (let option of capacityElement.options) {
-          option.disabled = +option.value !== value;
+        option.disabled = +option.value !== value;
       }
     }
     else {

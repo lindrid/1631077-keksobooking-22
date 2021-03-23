@@ -1,15 +1,15 @@
 import {getRandomInt, getRandomFloat} from './util.js';
 import {
-    OFFER_TITLE_MIN_LENGTH,
-    OFFER_TITLE_MAX_LENGTH,
-    MIN_BUNGALOW_PRICE,
-    MIN_FLAT_PRICE,
-    MIN_HOUSE_PRICE,
-    MIN_PALACE_PRICE,
-    BUNGALOW_NAME,
-    FLAT_NAME,
-    HOUSE_NAME,
-    PALACE_NAME
+  OFFER_TITLE_MIN_LENGTH,
+  OFFER_TITLE_MAX_LENGTH,
+  MIN_BUNGALOW_PRICE,
+  MIN_FLAT_PRICE,
+  MIN_HOUSE_PRICE,
+  MIN_PALACE_PRICE,
+  BUNGALOW_NAME,
+  FLAT_NAME,
+  HOUSE_NAME,
+  PALACE_NAME
 } from './offer.js';
 
 const PRECISION = 5;
@@ -57,10 +57,6 @@ const getWithCapital = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
 const getHousingName = function (housing) {
   return getWithCapital(housingsAttributes[housing].name);
-}
-
-const getHousingMinPrice = function (housing) {
-  return housingsAttributes[housing].minPrice;
 }
 
 const generateOffer = function (location) {
