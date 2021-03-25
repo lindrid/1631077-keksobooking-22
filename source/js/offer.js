@@ -1,3 +1,5 @@
+import { isArray } from "lodash";
+
 const OFFER_TITLE_MIN_LENGTH = 30;
 const OFFER_TITLE_MAX_LENGTH = 100;
 const OFFER_MAX_PRICE = 1000000;
@@ -60,21 +62,55 @@ const createElements = function (objects) {
     const offerElement = elementTemplate.cloneNode(true);
 
     const setTextContent = function (className, value) {
-      offerElement.querySelector(className).textContent = value;
+      if (value) {
+        offerElement.querySelector(className).textContent = value;
+      }
+      else {
+        offerElement.querySelector(className).classList.add('hidden');
+      }
     }
-    
+
+    const getType = function () {
+      if (offer.type in housingsAttributes) {
+        return housingsAttributes[offer.type].name;
+      }
+      return false;
+    }
+
+    const getCapacity = function () {
+      if (
+        !offer.rooms && offer.rooms !== 0 ||
+        !offer.guests && offer.guests !== 0
+      ) {
+        return false;
+      }
+      return `${getRoomsString(offer.rooms)} для ${getGuestsString(offer.guests)}`;
+    }
+
+    const getTime = function () {
+      if (!offer.checkin || !offer.checkout) {
+        return false;
+      }
+      return `Заезд после ${offer.checkin}, выезд ` + `до ${offer.checkout}`;
+    }
+
+    const getPrice = function () {
+      if (!offer.price && offer.price !== 0) {
+        return false;
+      }
+      return offer.price + ' ₽/ночь';
+    }
+
     setTextContent('.popup__title', offer.title);
     setTextContent('.popup__text--address', offer.address);
-    setTextContent('.popup__text--price', offer.price + ' ₽/ночь');
-    setTextContent('.popup__type', housingsAttributes[offer.type].name);
-    setTextContent('.popup__text--capacity', `${getRoomsString(offer.rooms)} для ` +
-      `${getGuestsString(offer.guests)}`);
-    setTextContent('.popup__text--time', `Заезд после ${offer.checkin}, выезд ` +
-      `до ${offer.checkout}`);
+    setTextContent('.popup__text--price', getPrice());
+    setTextContent('.popup__type', getType());
+    setTextContent('.popup__text--capacity', getCapacity());
+    setTextContent('.popup__text--time', getTime());
     setTextContent('.popup__description', offer.description);
     setTextContent('.popup__avatar', author.avatar);
    
-    if (offer.features.length > 0) {
+    if (isArray(offer.features) && offer.features.length > 0) {
       offerElement.querySelector('.popup__features').innerHTML =
         offer.features.reduce((string, item) => string + 
           `<li class="popup__feature popup__feature--${item}"></li>`, '',
@@ -85,11 +121,17 @@ const createElements = function (objects) {
       featuresElement.classList.add('hidden');
     }
     
-    offerElement.querySelector('.popup__photos').innerHTML =
-      offer.photos.reduce((string, item) => string + 
-        `<img src="${item}" class="popup__photo" width="45" ` + 
-        'height="40" alt="Фотография жилья">\n', '',
-      );
+    if (isArray(offer.photos) && offer.photos.length > 0) {
+      offerElement.querySelector('.popup__photos').innerHTML =
+        offer.photos.reduce((string, item) => string + 
+          `<img src="${item}" class="popup__photo" width="45" ` + 
+          'height="40" alt="Фотография жилья">\n', '',
+        );
+    }
+    else {
+      const photosElement = offerElement.querySelector('.popup__photos');
+      photosElement.classList.add('hidden');
+    }
 
     return offerElement;
   });

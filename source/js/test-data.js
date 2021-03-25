@@ -9,7 +9,7 @@ import {
   BUNGALOW_NAME,
   FLAT_NAME,
   HOUSE_NAME,
-  PALACE_NAME
+  PALACE_NAME,
 } from './offer.js';
 
 const PRECISION = 5;
@@ -63,7 +63,7 @@ const generateOffer = function (location) {
   const housings = ['palace', 'flat', 'house', 'bungalow'];
   const times = ['12:00', '13:00', '14:00'];
   const features = ['elevator', 'wifi', 'dishwasher', 'parking', 
-    'washer', 'conditioner'];
+  'washer', 'conditioner'];
   
   const housing = housings[getRandomInt(0, 3)];
   const housingAttributes = housingsAttributes[housing];
@@ -146,7 +146,7 @@ const generateOffer = function (location) {
   const photosNumber = getRandomInt(1, 10);
   const photos = new Array(photosNumber).fill(0).map(() => {
     const i = getRandomInt(1, 3);
-    return `${PHOTOES_URL}${i}.jpg`
+    return `${PHOTOES_URL}${i}.jpg`;
   });
 
   return {

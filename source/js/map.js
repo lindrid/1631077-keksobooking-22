@@ -130,11 +130,11 @@ class Map {
   
     let i = 1;
     let allMarkersAreShown = false;
-    for (let object of this.objects) {
+    this.objects.forEach((object) => {
       const marker = this.getMarkerBy(object);
   
       if (!marker) {
-        continue;
+        return;
       }
       
       if (marker.isPopupOpen()) {
@@ -143,9 +143,7 @@ class Map {
 
       this.hideMarker(marker);
   
-      const offer = object.offer;
-  
-      if (isOfferMatchedToFilter(offer, filterControls)) {
+      if (isOfferMatchedToFilter(object.offer, filterControls)) {
         if (!allMarkersAreShown) {
           this.showMarker(marker);
           if (i === this.maxMarkersToDraw) {
@@ -154,7 +152,7 @@ class Map {
           i++;
         }
       }
-    }
+    });
   }
 }
 
