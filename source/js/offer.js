@@ -1,4 +1,4 @@
-import { isArray } from "lodash";
+import { isArray } from 'lodash';
 
 const OFFER_TITLE_MIN_LENGTH = 30;
 const OFFER_TITLE_MAX_LENGTH = 100;
